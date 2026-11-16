@@ -1,0 +1,25 @@
+# Render Blueprint — lets Render create the web service for you.
+# Render dashboard → New → Blueprint → pick this GitHub repo.
+services:
+  - type: web
+    name: frame
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: AUDD_API_TOKEN
+        sync: false
+      - key: MUSIXMATCH_API_KEY
+        sync: false
+      - key: SITE_URL
+        sync: false
+      - key: GOOGLE_SITE_VERIFICATION
+        sync: false
+      - key: ANALYTICS_KEY
+        sync: false
+      - key: REDIRECT_TO
+        sync: false

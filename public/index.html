@@ -1054,10 +1054,126 @@ button .ic,a .ic,.chip .ic{pointer-events:none;}
 .lyr-copy{font-size:.7rem;color:#7c937c;margin-bottom:.8rem;}
 .lyr-none{font-size:.9rem;color:#aac2aa;margin-bottom:.8rem;}
 @media(max-width:700px){.lyr-l{font-size:1.15rem;text-align:center;}.lyr-l.hot{font-size:1.4rem;}.lyr-lines{max-height:none;}}
+
+/* ── now-playing bar ── */
+.fp{position:absolute!important;left:20px;right:20px;bottom:18px;z-index:13!important;display:none;align-items:center;gap:1rem;padding:.6rem .9rem .6rem .6rem;border-radius:16px;background:rgba(8,20,10,.88);backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);border:1px solid rgba(0,255,65,.22);box-shadow:0 14px 40px rgba(0,0,0,.6),0 0 24px rgba(0,255,65,.08);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:#eaffea;}
+.fp.show{display:flex;animation:fpIn .3s ease;}
+@keyframes fpIn{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.fp-cv{width:56px;height:56px;border-radius:10px;object-fit:cover;flex-shrink:0;background:#0b170b;}
+.fp.on .fp-cv{box-shadow:0 0 0 2px var(--g),0 0 16px rgba(0,255,65,.4);}
+.fp-meta{display:flex;flex-direction:column;min-width:0;width:220px;flex-shrink:0;line-height:1.25;}
+.fp-meta small{font-size:.68rem;color:#8fb08f;letter-spacing:.02em;}
+.fp-meta b{font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase;}
+.fp-meta span{font-size:.82rem;color:#b9d6b9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fp-mid{flex:1;display:flex;align-items:center;gap:.7rem;min-width:0;}
+.fp-t{font-size:.78rem;color:#b9d6b9;font-variant-numeric:tabular-nums;flex-shrink:0;}
+.fp-bar,.fp-volr{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:4px;background:linear-gradient(90deg,var(--g) var(--p,0%),rgba(255,255,255,.18) var(--p,0%));outline:none;cursor:pointer;min-width:0;}
+.fp-volr{flex:none;width:80px;background:rgba(255,255,255,.25);}
+.fp-bar::-webkit-slider-thumb,.fp-volr::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--g);box-shadow:0 0 8px rgba(0,255,65,.6);}
+.fp-bar::-moz-range-thumb,.fp-volr::-moz-range-thumb{width:10px;height:10px;border-radius:50%;background:#fff;border:3px solid var(--g);}
+.fp-ctl{display:flex;align-items:center;gap:.5rem;flex-shrink:0;}
+.fp-vw{display:flex;align-items:center;gap:.3rem;flex-shrink:0;}
+.fp-b{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;border:none;background:none;color:#eaffea;cursor:pointer;font-size:1.05rem;transition:background .15s,color .15s;}
+.fp-b:hover{background:rgba(255,255,255,.08);color:var(--g);}
+.fp-b:disabled{opacity:.3;cursor:default;background:none;color:#eaffea;}
+.fp-pp{width:50px;height:50px;background:var(--g);color:#002b0b;font-size:1.25rem;box-shadow:0 0 18px rgba(0,255,65,.45);}
+.fp-pp:hover{background:#4dff7c;color:#002b0b;}
+.fp-x{width:30px;height:30px;font-size:.85rem;background:rgba(255,255,255,.08);}
+#screen-music:has(.fm-listen.open) .fp{display:none;}
+#screen-music.has-player .fm-fab{bottom:118px;}
+#screen-music.has-player .fm-scroll,#screen-music.has-player .sp-scroll{padding-bottom:110px;}
+@media(max-width:1000px){.fp-vw{display:none;}.fp-meta{width:160px;}}
+@media(max-width:700px){
+  .fp{left:.6rem;right:.6rem;bottom:5.4rem;flex-wrap:wrap;gap:.25rem .6rem;padding:.5rem .55rem .45rem;}
+  .fp-cv{width:44px;height:44px;}
+  .fp-meta{flex:1;width:auto;}
+  .fp-meta small{display:none;}
+  .fp-ctl{gap:.1rem;}.fp-b{width:34px;height:34px;}.fp-pp{width:42px;height:42px;}
+  .fp-mid{order:5;flex-basis:100%;gap:.5rem;}.fp-t{font-size:.68rem;}
+  .fp-x{position:absolute;top:-10px;right:-6px;width:24px;height:24px;font-size:.7rem;background:#132313;border:1px solid rgba(0,255,65,.25);}
+  #screen-music.has-player .fm-fab{bottom:200px;}
+  #screen-music.has-player .fm-scroll,#screen-music.has-player .sp-scroll{padding-bottom:200px;}
+}
+
+/* ── nav search box ── */
+.fm-sbox{position:relative;display:flex;align-items:center;width:clamp(220px,24vw,360px);height:44px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);transition:border-color .2s,box-shadow .2s,background .2s;}
+.fm-sbox:focus-within{border-color:var(--g);background:rgba(0,20,6,.85);box-shadow:0 0 0 3px rgba(0,255,65,.15);}
+.fm-sbox input{flex:1;min-width:0;height:100%;border:none;background:none;outline:none;color:#fff;font:500 .95rem system-ui,-apple-system,'Segoe UI',sans-serif;padding:0 .4rem 0 1rem;}
+.fm-sbox input::placeholder{color:#9fb59f;}
+.fm-sbox input::-webkit-search-cancel-button{display:none;}
+.fm-sbox>button{width:42px;height:42px;border:none;background:none;color:#fff;cursor:pointer;font-size:1.15rem;display:inline-flex;align-items:center;justify-content:center;}
+.fm-sbox>button:hover{color:var(--g);}
+.fm-sicon{display:none!important;}
+.fm-sdrop{position:absolute;top:calc(100% + 8px);right:0;width:min(440px,92vw);max-height:70vh;overflow-y:auto;display:none;padding:.5rem;border-radius:16px;background:#071108;border:1px solid rgba(0,255,65,.2);box-shadow:0 20px 50px rgba(0,0,0,.65);z-index:30;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;}
+.fm-sdrop.open{display:block;animation:fadein .15s;}
+.sd-q{display:flex;align-items:center;gap:.6rem;width:100%;padding:.55rem .7rem;border:none;background:none;color:#dfffdf;border-radius:10px;cursor:pointer;font:500 .9rem system-ui,sans-serif;text-align:left;}
+.sd-q:hover{background:rgba(255,255,255,.06);}
+.sd-q .ic{color:#7f9f7f;}
+.sd-all{display:block;width:100%;margin-top:.3rem;padding:.7rem;border:none;border-top:1px solid rgba(255,255,255,.08);background:none;color:var(--g);font:600 .88rem system-ui,sans-serif;cursor:pointer;border-radius:0 0 10px 10px;}
+.sd-all:hover{background:rgba(0,255,65,.07);}
+.sd-wait{padding:1.2rem;text-align:center;color:#9fb59f;font:500 .9rem system-ui,sans-serif;}
+@media(max-width:900px){.fm-sbox{display:none;}.fm-sicon{display:inline-flex!important;}}
+/* ── search page ── */
+.fs-page{flex-direction:column;background:#050905!important;backdrop-filter:none!important;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:#eaffea;z-index:11!important;}
+.fs-top{display:flex;align-items:center;gap:.8rem;padding:1.1rem 2rem;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;}
+.fs-back{width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.15);background:none;color:#fff;font-size:1.1rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fs-back:hover{border-color:var(--g);color:var(--g);}
+.fs-field{flex:1;max-width:760px;display:flex;align-items:center;gap:.7rem;height:52px;padding:0 .5rem 0 1.1rem;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);}
+.fs-field:focus-within{border-color:var(--g);box-shadow:0 0 0 3px rgba(0,255,65,.15);}
+.fs-field>.ic{color:#9fb59f;font-size:1.15rem;}
+.fs-field input{flex:1;min-width:0;height:100%;border:none;background:none;outline:none;color:#fff;font:500 1.05rem system-ui,sans-serif;}
+.fs-field input::-webkit-search-cancel-button{display:none;}
+.fs-clear{width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.08);color:#cfe9cf;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
+.fs-body{flex:1;overflow-y:auto;padding:1.4rem 2rem 7rem;width:100%;max-width:1200px;margin:0 auto;}
+.fs-h{display:flex;align-items:center;justify-content:space-between;margin:1.2rem 0 .7rem;}
+.fs-h b{font-size:1.3rem;font-weight:800;}
+.fs-h.sm{margin:.3rem .5rem .4rem;}.fs-h.sm b{font-size:.78rem;font-weight:700;color:#8fb08f;text-transform:uppercase;letter-spacing:.06em;}
+.fs-h button{display:inline-flex;align-items:center;gap:.4rem;border:1px solid rgba(255,255,255,.18);background:none;color:#dfffdf;border-radius:20px;padding:.4rem .9rem;font:600 .8rem system-ui,sans-serif;cursor:pointer;}
+.fs-h button:hover{border-color:var(--g);color:var(--g);}
+.fs-grid{display:grid;grid-template-columns:minmax(260px,380px) 1fr;gap:1.6rem;align-items:start;}
+.fs-top1{position:relative;display:flex;flex-direction:column;gap:.35rem;padding:1.2rem;border-radius:18px;background:linear-gradient(160deg,rgba(0,255,65,.12),rgba(255,255,255,.03));border:1px solid rgba(0,255,65,.18);cursor:pointer;transition:background .2s;}
+.fs-top1:hover{background:linear-gradient(160deg,rgba(0,255,65,.2),rgba(255,255,255,.05));}
+.fs-top1>b{font-size:1.7rem;font-weight:800;line-height:1.15;margin-top:.6rem;}
+.fs-top1>small{color:#b9d6b9;font-size:.92rem;}.fs-top1 small em{font-style:normal;color:#8fb08f;}
+.fs-bigplay{position:absolute;right:1.2rem;bottom:1.2rem;width:56px;height:56px;border-radius:50%;border:none;background:var(--g);color:#002b0b;font-size:1.3rem;cursor:pointer;box-shadow:0 8px 24px rgba(0,255,65,.35);}
+.fs-cv{position:relative;width:52px;height:52px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#0d1a0d;display:inline-flex;align-items:center;justify-content:center;color:#5f8f5f;}
+.fs-cv.big{width:120px;height:120px;border-radius:12px;box-shadow:0 10px 26px rgba(0,0,0,.5);}
+.fs-cv img{width:100%;height:100%;object-fit:cover;}
+.fs-cv .tr-btn{position:absolute;inset:0;width:100%;height:100%;border-radius:0;border:none;background:rgba(0,0,0,.45);color:#fff;opacity:0;transition:opacity .15s;font-size:1rem;}
+.fs-row:hover .fs-cv .tr-btn,.fs-cv .tr-btn.playing{opacity:1;}
+.fs-cv .tr-btn.playing{background:rgba(0,40,10,.6);color:var(--g);}
+.fs-list{display:flex;flex-direction:column;}
+.fs-row{display:flex;align-items:center;gap:.9rem;padding:.5rem;border-radius:12px;cursor:pointer;transition:background .15s;}
+.fs-row:hover{background:rgba(255,255,255,.06);}
+.fs-tx{flex:1;min-width:0;display:flex;flex-direction:column;}
+.fs-tx b{font-size:.98rem;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fs-tx small{font-size:.83rem;color:#9fb59f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fs-go{color:#5f7f5f;opacity:0;transition:opacity .15s;}.fs-row:hover .fs-go{opacity:1;}
+.fs-artists{display:flex;gap:1rem;overflow-x:auto;padding-bottom:.5rem;}
+.fs-artists button{display:flex;flex-direction:column;align-items:center;gap:.35rem;min-width:130px;padding:.8rem;border:none;border-radius:16px;background:none;color:#eaffea;cursor:pointer;}
+.fs-artists button:hover{background:rgba(255,255,255,.05);}
+.fs-av{width:104px;height:104px;border-radius:50%;overflow:hidden;background:#0d1a0d;display:inline-flex;align-items:center;justify-content:center;color:#5f8f5f;font-size:1.6rem;}
+.fs-av img{width:100%;height:100%;object-fit:cover;}
+.fs-artists b{font-size:.92rem;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.fs-artists small{font-size:.75rem;color:#8fb08f;}
+.fs-chips{display:flex;flex-wrap:wrap;gap:.5rem;}
+.fs-chips button{display:inline-flex;align-items:center;gap:.45rem;padding:.5rem .95rem;border-radius:20px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:#dfffdf;font:500 .88rem system-ui,sans-serif;cursor:pointer;}
+.fs-chips button:hover{border-color:var(--g);}
+.fs-chips .ic{color:#7f9f7f;}
+.fs-empty{display:flex;flex-direction:column;align-items:center;gap:.5rem;text-align:center;padding:4rem 1rem;color:#9fb59f;}
+.fs-empty .ic.lg{font-size:2.4rem;color:#3f6f3f;}.fs-empty b{color:#eaffea;font-size:1.15rem;}
+.fs-spin{width:26px;height:26px;border-radius:50%;border:3px solid rgba(0,255,65,.2);border-top-color:var(--g);animation:fsSpin .8s linear infinite;display:inline-block;}
+@keyframes fsSpin{to{transform:rotate(360deg)}}
+.fp-meta small em{font-style:normal;color:#6f906f;}
+@media(max-width:800px){.fs-grid{grid-template-columns:1fr;}.fs-top{padding:.8rem;}.fs-body{padding:1rem 1rem 12rem;}.fs-top1>b{font-size:1.35rem;}.fs-cv.big{width:96px;height:96px;}.fs-av{width:80px;height:80px;}.fs-artists button{min-width:100px;}.fs-go{display:none;}}
+.fm-page>.fm-nav{z-index:20!important;}
+.fm-sdrop .fs-tx b{color:#eaffea;}
+.fs-field{min-width:0;}
+.fs-bigplay.playing,.fs-bigplay:hover{background:var(--g)!important;color:#002b0b!important;border:none!important;}
+.fp-meta small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></symbol><symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6M14 11v6"/></symbol><symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4M8 22h8"/></symbol><symbol id="i-micoff" viewBox="0 0 24 24"><path d="m2 2 20 20"/><path d="M15 9.3V5a3 3 0 0 0-5.7-1.3"/><path d="M9 9v2a3 3 0 0 0 5.1 2.1"/><path d="M19 10v1a7 7 0 0 1-1.2 3.9M5 10v1a7 7 0 0 0 11.5 5.4"/><path d="M12 18v4M8 22h8"/></symbol><symbol id="i-video" viewBox="0 0 24 24"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/></symbol><symbol id="i-videooff" viewBox="0 0 24 24"><path d="m2 2 20 20"/><path d="M16 16v1a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/><path d="m22 8-6 4 6 4V8Z"/><path d="M10 5h4a2 2 0 0 1 2 2v3"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></symbol><symbol id="i-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/></symbol><symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol><symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol><symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol><symbol id="i-pencil" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></symbol><symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol><symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol><symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="m16 6-4-4-4 4"/><path d="M12 2v13"/></symbol><symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol><symbol id="i-headphones" viewBox="0 0 24 24"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol><symbol id="i-library" viewBox="0 0 24 24"><path d="m16 6 4 14M12 6v14M8 8v12M4 4v16"/></symbol><symbol id="i-trend" viewBox="0 0 24 24"><path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/></symbol><symbol id="i-back" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z" fill="currentColor" stroke="none"/></symbol><symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 4h3.5v16H7zM13.5 4H17v16h-3.5z" fill="currentColor" stroke="none"/></symbol><symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" stroke="none"/></symbol><symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></symbol><symbol id="i-ext" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol><symbol id="i-warn" viewBox="0 0 24 24"><path d="m21.7 18-8-14a2 2 0 0 0-3.4 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3"/><path d="M12 9v4M12 17h.01"/></symbol><symbol id="i-dice" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1" fill="currentColor"/></symbol><symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></symbol><symbol id="i-phoneoff" viewBox="0 0 24 24"><path d="M10.7 13.3a16 16 0 0 0 3.4 2.6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 3 4.2 2 2 0 0 1 4.9 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.9 9.7"/><path d="M22 2 2 22"/></symbol><symbol id="i-flip" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M8 16H3v5"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-login" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></symbol><symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="19" cy="12" r="1.3" fill="currentColor"/></symbol><symbol id="i-morev" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="12" cy="19" r="1.3" fill="currentColor"/></symbol></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></symbol><symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6M14 11v6"/></symbol><symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4M8 22h8"/></symbol><symbol id="i-micoff" viewBox="0 0 24 24"><path d="m2 2 20 20"/><path d="M15 9.3V5a3 3 0 0 0-5.7-1.3"/><path d="M9 9v2a3 3 0 0 0 5.1 2.1"/><path d="M19 10v1a7 7 0 0 1-1.2 3.9M5 10v1a7 7 0 0 0 11.5 5.4"/><path d="M12 18v4M8 22h8"/></symbol><symbol id="i-video" viewBox="0 0 24 24"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/></symbol><symbol id="i-videooff" viewBox="0 0 24 24"><path d="m2 2 20 20"/><path d="M16 16v1a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/><path d="m22 8-6 4 6 4V8Z"/><path d="M10 5h4a2 2 0 0 1 2 2v3"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></symbol><symbol id="i-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/></symbol><symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol><symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol><symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol><symbol id="i-pencil" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></symbol><symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol><symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol><symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="m16 6-4-4-4 4"/><path d="M12 2v13"/></symbol><symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol><symbol id="i-headphones" viewBox="0 0 24 24"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol><symbol id="i-library" viewBox="0 0 24 24"><path d="m16 6 4 14M12 6v14M8 8v12M4 4v16"/></symbol><symbol id="i-trend" viewBox="0 0 24 24"><path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/></symbol><symbol id="i-back" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z" fill="currentColor" stroke="none"/></symbol><symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 4h3.5v16H7zM13.5 4H17v16h-3.5z" fill="currentColor" stroke="none"/></symbol><symbol id="i-prev" viewBox="0 0 24 24"><path d="M6 5h2.5v14H6z" fill="currentColor" stroke="none"/><path d="M19 5v14L9 12z" fill="currentColor" stroke="none"/></symbol><symbol id="i-next" viewBox="0 0 24 24"><path d="M15.5 5H18v14h-2.5z" fill="currentColor" stroke="none"/><path d="M5 5v14l10-7z" fill="currentColor" stroke="none"/></symbol><symbol id="i-vol" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></symbol><symbol id="i-mute" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></symbol><symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" stroke="none"/></symbol><symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></symbol><symbol id="i-ext" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol><symbol id="i-warn" viewBox="0 0 24 24"><path d="m21.7 18-8-14a2 2 0 0 0-3.4 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3"/><path d="M12 9v4M12 17h.01"/></symbol><symbol id="i-dice" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1" fill="currentColor"/></symbol><symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></symbol><symbol id="i-phoneoff" viewBox="0 0 24 24"><path d="M10.7 13.3a16 16 0 0 0 3.4 2.6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 3 4.2 2 2 0 0 1 4.9 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.9 9.7"/><path d="M22 2 2 22"/></symbol><symbol id="i-flip" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M8 16H3v5"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-login" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></symbol><symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="19" cy="12" r="1.3" fill="currentColor"/></symbol><symbol id="i-morev" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="12" cy="19" r="1.3" fill="currentColor"/></symbol></svg>
 
 <canvas id="matrix-canvas"></canvas>
 
@@ -1250,7 +1366,12 @@ button .ic,a .ic,.chip .ic{pointer-events:none;}
       <a onclick="openLibrary()" data-i18n="nav_library">Library</a>
     </div>
     <div class="fm-right">
-      <button class="fm-icon" onclick="openSearch()" title="Search"><svg class="ic"><use href="#i-search"/></svg></button>
+      <div class="fm-sbox" id="fm-sbox">
+        <input id="fm-sbox-in" type="search" autocomplete="off" data-i18n-ph="search_music" placeholder="Search for music" oninput="sboxInput()" onfocus="sboxInput()" onkeydown="sboxKey(event)"/>
+        <button onclick="sboxGo()" aria-label="Search"><svg class="ic"><use href="#i-search"/></svg></button>
+        <div class="fm-sdrop" id="fm-sdrop"></div>
+      </div>
+      <button class="fm-icon fm-sicon" onclick="openSearch()" title="Search"><svg class="ic"><use href="#i-search"/></svg></button>
       <button class="chip" onclick="toggleLangMenu(event)"><b class="lang-code">EN</b></button>
       <button class="fm-pill" onclick="openChatHub()"><svg class="ic"><use href="#i-chat"/></svg> <span class="hide-sm">CHAT</span></button>
       <button class="fm-pill" onclick="goHub()"><svg class="ic"><use href="#i-back"/></svg></button>
@@ -1288,6 +1409,23 @@ button .ic,a .ic,.chip .ic{pointer-events:none;}
   </div>
   <button class="fm-fab" onclick="openListen(true)" title="Frame it"><b>F</b><i>m</i></button>
 
+  <!-- now-playing bar -->
+  <div class="fp" id="fp" role="region" aria-label="Now playing">
+    <img class="fp-cv" id="fp-cover" alt=""/>
+    <div class="fp-meta"><small><span data-i18n="now_playing">Now Previewing</span><em id="fp-upnext"></em></small><b id="fp-title">—</b><span id="fp-artist"></span></div>
+    <div class="fp-mid">
+      <span class="fp-t" id="fp-cur">00:00</span>
+      <input class="fp-bar" id="fp-bar" type="range" min="0" max="1000" value="0" aria-label="Seek" oninput="this.style.setProperty('--p',this.value/10+'%')" onchange="playerSeek(this.value)"/>
+      <span class="fp-t" id="fp-dur">00:30</span>
+    </div>
+    <div class="fp-ctl">
+      <button class="fp-b" id="fp-prev" onclick="playerPrev()" aria-label="Previous"><svg class="ic"><use href="#i-prev"/></svg></button>
+      <button class="fp-b fp-pp" id="fp-play" onclick="playerToggle()" aria-label="Play/Pause"><svg class="ic"><use href="#i-play"/></svg></button>
+      <button class="fp-b" id="fp-next" onclick="playerNext()" aria-label="Next"><svg class="ic"><use href="#i-next"/></svg></button>
+    </div>
+    <div class="fp-vw"><button class="fp-b" id="fp-vol" onclick="playerMute()" aria-label="Mute"><svg class="ic"><use href="#i-vol"/></svg></button><input class="fp-volr" type="range" min="0" max="100" value="100" aria-label="Volume" oninput="playerVolume(this.value)"/></div>
+    <button class="fp-b fp-x" onclick="playerClose()" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
   <!-- mobile bottom navigation -->
   <nav class="fm-bnav">
     <div class="fm-bnav-pill">
@@ -1376,12 +1514,12 @@ button .ic,a .ic,.chip .ic{pointer-events:none;}
   </div>
 
   <!-- search sheet -->
-  <div class="fm-sheet" id="fm-search">
-    <button class="fm-sheet-x" onclick="closeSearch()"><svg class="ic"><use href="#i-x"/></svg></button>
-    <div class="fm-sheet-body" style="justify-content:flex-start;">
-      <input class="fm-search-in" id="fm-search-in" data-i18n-ph="search_ph" placeholder="Search a song or artist..." oninput="searchDebounced()"/>
-      <div class="music-section" style="margin-top:1rem;"><div id="fm-search-res"></div></div>
+  <div class="fm-sheet fs-page" id="fm-search">
+    <div class="fs-top">
+      <button class="fs-back" onclick="closeSearch()" aria-label="Back"><svg class="ic"><use href="#i-back"/></svg></button>
+      <div class="fs-field"><svg class="ic"><use href="#i-search"/></svg><input id="fm-search-in" type="search" autocomplete="off" data-i18n-ph="search_ph" placeholder="Search a song or artist..." oninput="searchDebounced()" onkeydown="if(event.key==='Enter'){clearTimeout(fmSearchT);doSearch();}"/><button class="fs-clear" onclick="const i=document.getElementById('fm-search-in');i.value='';i.focus();doSearch()" aria-label="Clear"><svg class="ic"><use href="#i-x"/></svg></button></div>
     </div>
+    <div class="fs-body" id="fm-search-res"></div>
   </div>
 </div>
 
@@ -1426,7 +1564,7 @@ button .ic,a .ic,.chip .ic{pointer-events:none;}
 <div class="modal-overlay" id="modal-invite">
   <div class="modal modal-lg">
     <button class="m-x" onclick="closeModal('modal-invite')"><svg class="ic"><use href="#i-x"/></svg></button>
-    <h3>▶ <span data-i18n="inv_title">ACCESS LINK</span></h3>
+    <h3><svg class="ic"><use href="#i-link"/></svg> <span data-i18n="inv_title">ACCESS LINK</span></h3>
     <p class="m-sub" data-i18n="inv_sub">One-time use. Expires automatically. Share with care.</p>
     <div class="m-warn"><svg class="ic"><use href="#i-warn"/></svg> <span data-i18n="inv_warn">Single-use link: the first person who opens it is locked into this chat. Send it only to your guest.</span></div>
     <div class="m-link"><input id="inv-link" readonly onclick="this.select()"/><button class="icon-btn" onclick="copyInvite(this)" title="Copy"><svg class="ic"><use href="#i-copy"/></svg></button></div>
@@ -1617,7 +1755,7 @@ async function loadHubTrending(){
     document.getElementById('hx-trend').innerHTML=d.trending.slice(0,10).map((tr,i)=>`<div class="ho-tile" onclick="openMusic();setTimeout(()=>openTrack(fmData.trending[${i}]),300)"><span class="cv" style="background-image:url('${esc(tr.coverBig||tr.cover)}')"></span><b>${esc(tr.title)}</b><span>${esc(tr.artist)}</span></div>`).join('');
   }catch(e){document.querySelector('.ho-strip').style.display='none';}
 }
-function goHub(){stopListen(true);showScreen('hub');startHub();}
+function goHub(){stopListen(true);if(typeof playerClose==='function')playerClose();showScreen('hub');startHub();}
 function openChatHub(){requireName(()=>{stopListen(true);enterChat();});}
 // Chat goes straight to the chat page: reopen your latest active chat, or start a new one.
 let helloReady=false,pendingEnter=false;
@@ -1653,7 +1791,7 @@ function renderCarousel(){
       <div class="fc-meta">
         <div class="fc-txt"><div class="fc-title">${esc(tr.title)}</div><div class="fc-artist">${esc(tr.artist)}</div>
           <div class="fc-rank"><b>Fm</b> #${i+1}</div></div>
-        ${tr.preview?`<button class="fc-btn tr-btn" data-src="${esc(tr.preview)}" onclick="event.stopPropagation();togglePreview(this)">${ic('play')}</button>`:''}
+        ${tr.preview?`<button class="fc-btn tr-btn" data-src="${pm(tr)}" onclick="event.stopPropagation();togglePreview(this)">${ic('play')}</button>`:''}
         <button class="fc-btn" onclick="event.stopPropagation();openTrack(fmSlides[${i}])" title="Details">${ic('ext')}</button>
       </div>
     </div>`).join('');
@@ -1688,7 +1826,7 @@ function renderTop10(){
     <div class="fm-trow" onclick="openTrack(fmData.trending[${i}])">
       <div class="n">${i+1}</div><img src="${esc(tr.cover)}" alt="" loading="lazy"/>
       <div class="tt"><b>${esc(tr.title)}</b><span>${esc(tr.artist)}</span></div>
-      ${tr.preview?`<button class="tr-btn" data-src="${esc(tr.preview)}" onclick="event.stopPropagation();togglePreview(this)">${ic('play')}</button>`:''}
+      ${tr.preview?`<button class="tr-btn" data-src="${pm(tr)}" onclick="event.stopPropagation();togglePreview(this)">${ic('play')}</button>`:''}
     </div>`).join('');
 }
 function renderRows(){
@@ -1699,10 +1837,10 @@ function renderRows(){
     <a class="fm-tile artist" href="${esc(a.link)}" target="_blank" rel="noopener" style="text-decoration:none;"><img src="${esc(a.picture)}" alt="" loading="lazy"/><b>${esc(a.name)}</b></a>`).join('');
 }
 function openResult(){const sh=document.getElementById('fm-sheet');sh.classList.add('open');document.getElementById('sp-scroll').scrollTop=0;}
-function closeResult(){previewAudio.pause();document.getElementById('fm-sheet').classList.remove('open');}
+function closeResult(){document.getElementById('fm-sheet').classList.remove('open');}
 function openTrack(tr){const s=fmTrackToSong(tr);showSong(s);loadSimilar(s);openResult();}
 function openListen(start){
-  const L=document.getElementById('fm-listen');L.classList.add('open');
+  const L=document.getElementById('fm-listen');L.classList.add('open');previewAudio.pause();
   if(!mBusy&&!(mRec&&mRec.state==='recording'))setListenUI('idle');
   if(start===true&&!(mRec&&mRec.state==='recording')&&!mBusy)toggleListen();
 }
@@ -1714,25 +1852,87 @@ function cancelListen(){
 function closeListen(){cancelListen();closeResult();}
 function fmGo(id){const sc=document.getElementById('fm-scroll');sc.scrollTo({top:document.getElementById(id).offsetTop-10,behavior:'smooth'});document.getElementById('screen-music').scrollTop=0;}
 function fmScrollTop(){document.getElementById('fm-scroll').scrollTo({top:0,behavior:'smooth'});}
-function openSearch(){document.getElementById('fm-search').classList.add('open');setTimeout(()=>document.getElementById('fm-search-in').focus(),50);}
+function openSearch(q){
+  const i=document.getElementById('fm-search-in');if(typeof q==='string'){i.value=q;}
+  document.getElementById('fm-search').classList.add('open');sboxHide();
+  if(i.value.trim())doSearch();else renderSearchHome();
+  setTimeout(()=>i.focus(),50);
+}
 function closeSearch(){document.getElementById('fm-search').classList.remove('open');}
-let fmSearchT=null;
-function searchDebounced(){clearTimeout(fmSearchT);fmSearchT=setTimeout(doSearch,350);}
+let fmSearchT=null,fmSearchSeq=0;
+const searchCache=new Map();
+async function fetchSearch(q){
+  const k=q.toLowerCase();if(searchCache.has(k))return searchCache.get(k);
+  const d=await (await fetch('/api/music/search?q='+encodeURIComponent(q))).json();
+  if(d.ok){searchCache.set(k,d);if(searchCache.size>40)searchCache.delete(searchCache.keys().next().value);}
+  return d;
+}
+function getRecentSearches(){try{return JSON.parse(localStorage.getItem('fc_srch')||'[]');}catch(e){return [];}}
+function addRecentSearch(q){q=q.trim();if(!q)return;try{localStorage.setItem('fc_srch',JSON.stringify([q,...getRecentSearches().filter(x=>x.toLowerCase()!==q.toLowerCase())].slice(0,8)));}catch(e){}}
+function clearRecentSearches(){try{localStorage.removeItem('fc_srch');}catch(e){}renderSearchHome();}
+function renderSearchHome(){
+  const r=getRecentSearches(),box=document.getElementById('fm-search-res');
+  const trend=(fmData?.trending||[]).slice(0,8);
+  box.innerHTML=(r.length?`<div class="fs-h"><b>${esc(t('recent_searches'))}</b><button onclick="clearRecentSearches()">${esc(t('clear'))}</button></div>
+    <div class="fs-chips">${r.map(q=>`<button onclick="openSearch(${esc(JSON.stringify(q))})">${ic('search')} ${esc(q)}</button>`).join('')}</div>`:'')+
+    (trend.length?`<div class="fs-h"><b>${esc(t('sec_trending'))}</b></div><div class="fs-list">${trend.map((tr,i)=>songRow(tr,i,'trend')).join('')}</div>`:
+    `<div class="fs-empty">${ic('search','lg')}<b>${esc(t('search_hint_t'))}</b><span>${esc(t('search_hint'))}</span></div>`);
+}
+function songRow(tr,i,list){
+  return `<div class="fs-row" onclick="searchOpen('${list}',${i})">
+    <span class="fs-cv">${tr.cover?`<img src="${esc(tr.cover)}" alt="" loading="lazy"/>`:ic('music')}${tr.preview?`<button class="tr-btn" data-src="${pm(tr)}" onclick="event.stopPropagation();togglePreview(this)">${ic('play')}</button>`:''}</span>
+    <span class="fs-tx"><b>${esc(tr.title)}</b><small>${esc(tr.artist)}${tr.album?' · '+esc(tr.album):''}</small></span>
+    <span class="fs-go">${ic('ext')}</span></div>`;
+}
+window._fsLists={};
+function searchOpen(list,i){const tr=(list==='trend'?(fmData?.trending||[]):window._fsLists[list]||[])[i];if(!tr)return;if(list!=='trend')addRecentSearch(document.getElementById('fm-search-in').value);closeSearch();sboxHide();openTrack(tr);}
+function artistsOf(tracks){const m=new Map();tracks.forEach(x=>{if(x.artist&&!m.has(x.artist))m.set(x.artist,x);});return [...m.values()].slice(0,6);}
+function searchDebounced(){clearTimeout(fmSearchT);fmSearchT=setTimeout(doSearch,300);}
 async function doSearch(){
   const q=document.getElementById('fm-search-in').value.trim(),box=document.getElementById('fm-search-res');
-  if(!q){box.innerHTML='';return;}
-  box.innerHTML='<div class="music-empty">// searching…</div>';
+  if(!q){renderSearchHome();return;}
+  const seq=++fmSearchSeq;
+  box.innerHTML=`<div class="fs-empty"><span class="fs-spin"></span><span>${esc(t('searching'))}</span></div>`;
   try{
-    const d=await (await fetch('/api/music/search?q='+encodeURIComponent(q))).json();
-    if(!d.ok){box.innerHTML='<div class="music-empty">// '+esc(d.error)+'</div>';return;}
-    window._fmRes=d.tracks;
-    box.innerHTML=d.tracks.length?d.tracks.map((tr,i)=>`
-      <div class="track-row" style="cursor:pointer" onclick="closeSearch();openTrack(_fmRes[${i}])">
-        <img src="${esc(tr.cover)}" alt=""/><div class="tr-info"><div class="tr-title">${esc(tr.title)}</div><div class="tr-artist">${esc(tr.artist)}</div></div>
-        ${tr.preview?`<button class="tr-btn" data-src="${esc(tr.preview)}" onclick="event.stopPropagation();togglePreview(this)">${ic('play')}</button>`:''}
-      </div>`).join(''):'<div class="music-empty">// nothing found</div>';
-  }catch(e){box.innerHTML='<div class="music-empty">// search failed</div>';}
+    const d=await fetchSearch(q);if(seq!==fmSearchSeq)return;
+    if(!d.ok){box.innerHTML=`<div class="fs-empty">${ic('warn','lg')}<span>${esc(d.error||t('search_fail'))}</span></div>`;return;}
+    const tr=d.tracks||[];window._fsLists.res=tr;window._fmRes=tr;
+    if(!tr.length){box.innerHTML=`<div class="fs-empty">${ic('music','lg')}<b>${esc(t('search_none'))}</b><span>${esc(t('search_none_d'))}</span></div>`;return;}
+    const top=tr[0],ar=artistsOf(tr);
+    box.innerHTML=`<div class="fs-grid">
+      <div><div class="fs-h"><b>${esc(t('top_result'))}</b></div>
+        <div class="fs-top1" onclick="searchOpen('res',0)">
+          <span class="fs-cv big">${top.coverBig||top.cover?`<img src="${esc(top.coverBig||top.cover)}" alt=""/>`:ic('music','lg')}</span>
+          <b>${esc(top.title)}</b><small><em>${esc(t('song'))}</em> ${esc(top.artist)}</small>
+          ${top.preview?`<button class="tr-btn fs-bigplay" data-src="${pm(top)}" onclick="event.stopPropagation();togglePreview(this)">${ic('play')}</button>`:''}
+        </div></div>
+      <div class="fs-songs"><div class="fs-h"><b>${esc(t('songs'))}</b><button onclick="playSearchAll()">${ic('play')} ${esc(t('play_all'))}</button></div>
+        <div class="fs-list" id="fs-res-list">${tr.map((x,i)=>songRow(x,i,'res')).join('')}</div></div>
+    </div>
+    ${ar.length>1?`<div class="fs-h"><b>${esc(t('artists_h'))}</b></div><div class="fs-artists">${ar.map(x=>`<button onclick="openSearch(${esc(JSON.stringify(x.artist))})"><span class="fs-av">${x.cover?`<img src="${esc(x.cover)}" alt="" loading="lazy"/>`:ic('users')}</span><b>${esc(x.artist)}</b><small>${esc(t('sp_artist'))}</small></button>`).join('')}</div>`:''}`;
+    syncPlayButtons();
+  }catch(e){if(seq===fmSearchSeq)box.innerHTML=`<div class="fs-empty">${ic('warn','lg')}<span>${esc(t('search_fail'))}</span></div>`;}
 }
+function playSearchAll(){const b=document.querySelector('#fs-res-list .tr-btn[data-src]');if(b){addRecentSearch(document.getElementById('fm-search-in').value);if(pCur()!==b.dataset.src)togglePreview(b);}}
+// nav search box with instant results
+let sboxT=null,sboxSeq=0;
+function sboxHide(){document.getElementById('fm-sdrop')?.classList.remove('open');}
+function sboxInput(){clearTimeout(sboxT);sboxT=setTimeout(sboxRun,250);}
+async function sboxRun(){
+  const q=document.getElementById('fm-sbox-in').value.trim(),dd=document.getElementById('fm-sdrop');
+  if(!q){const r=getRecentSearches();if(!r.length){sboxHide();return;}
+    dd.innerHTML=`<div class="fs-h sm"><b>${esc(t('recent_searches'))}</b></div>${r.slice(0,5).map(x=>`<button class="sd-q" onmousedown="event.preventDefault();openSearch(${esc(JSON.stringify(x))})">${ic('search')} ${esc(x)}</button>`).join('')}`;dd.classList.add('open');return;}
+  const seq=++sboxSeq;dd.innerHTML=`<div class="sd-wait"><span class="fs-spin"></span></div>`;dd.classList.add('open');
+  try{const d=await fetchSearch(q);if(seq!==sboxSeq)return;const tr=(d.tracks||[]).slice(0,6);window._fsLists.drop=tr;
+    dd.innerHTML=tr.length?`<div class="fs-h sm"><b>${esc(t('songs'))}</b></div><div class="fs-list">${tr.map((x,i)=>songRow(x,i,'drop')).join('')}</div>
+      <button class="sd-all" onmousedown="event.preventDefault();sboxGo()">${esc(t('see_all_results'))} “${esc(q)}”</button>`:`<div class="sd-wait">${esc(t('search_none'))}</div>`;
+    syncPlayButtons();
+  }catch(e){if(seq===sboxSeq)dd.innerHTML=`<div class="sd-wait">${esc(t('search_fail'))}</div>`;}
+}
+function sboxGo(){const i=document.getElementById('fm-sbox-in'),q=i.value.trim();if(!q){i.focus();return;}addRecentSearch(q);openSearch(q);i.blur();}
+function sboxKey(e){if(e.key==='Enter')sboxGo();else if(e.key==='Escape'){sboxHide();e.target.blur();}}
+document.addEventListener('mousedown',e=>{if(!e.target.closest('#fm-sbox'))sboxHide();});
+document.addEventListener('keydown',e=>{if(e.key==='/'&&document.getElementById('screen-music')?.classList.contains('active')&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();const i=document.getElementById('fm-sbox-in');if(i.offsetParent)i.focus();else openSearch();}});
 
 
 // ── MUSIC TRACKER ──
@@ -1830,7 +2030,7 @@ const initials=n=>String(n||'?').split(/\s+/).map(w=>w[0]).join('').slice(0,2).t
 function spTrackRow(tr,i,numbered){
   return `<div class="sp-tr" onclick='openTrack(${JSON.stringify(tr).replace(/'/g,"&#39;")})'>
     ${numbered?`<div class="no">${i+1}</div>`:''}
-    <div class="cv"><img src="${esc(tr.cover)}" alt="" loading="lazy"/>${tr.preview?`<button class="tr-btn" data-src="${esc(tr.preview)}" onclick="event.stopPropagation();togglePreview(this)">${ic('play')}</button>`:''}</div>
+    <div class="cv"><img src="${esc(tr.cover)}" alt="" loading="lazy"/>${tr.preview?`<button class="tr-btn" data-src="${pm(tr)}" onclick="event.stopPropagation();togglePreview(this)">${ic('play')}</button>`:''}</div>
     <div class="tx"><b>${esc(tr.title)}</b><span>${esc(tr.artist)}</span></div>
     ${tr.duration?`<div class="du">${fmtDur(tr.duration)}</div>`:''}
   </div>`;
@@ -1890,7 +2090,7 @@ function showSong(s){
         </div>
         <button class="sp-round" onclick="spShare()">${ic('share')}</button>
       </div>
-      <button class="sp-mplay tr-btn" id="sp-mplay" data-src="${esc(s.preview||'')}" onclick="togglePreview(this)" ${s.preview?'':'style="visibility:hidden"'}>${ic('play')}</button>
+      <button class="sp-mplay tr-btn" id="sp-mplay" data-src="${pm(s)}" onclick="togglePreview(this)" ${s.preview?'':'style="visibility:hidden"'}>${ic('play')}</button>
       <div class="sp-mtitle">${esc(s.title)}</div>
       <a class="sp-martist" id="sp-martist" target="_blank" rel="noopener">${esc(s.artist)}</a>
       ${hasMatch?`<div class="sp-mfound"><i>Fm</i>${esc(t('found_via'))}</div>`:''}
@@ -1898,10 +2098,10 @@ function showSong(s){
         <div class="seg"><a class="brand" href="${esc(primary[1])}" target="_blank" rel="noopener">${ic('play')} ${esc(primary[0])}</a><a href="${esc(primary[1])}" target="_blank" rel="noopener">${esc(t('m_open'))}</a><button onclick="spShare()">${esc(t('sp_share')).toUpperCase()}</button></div>
         <button class="sp-round" onclick="event.stopPropagation();document.getElementById('sp-menu2').classList.toggle('open')">${ic('morev')}</button>
         <div class="sp-menu" id="sp-menu2">
-          ${s.links?.spotify?`<a href="${esc(s.links.spotify)}" target="_blank" rel="noopener">Spotify ↗</a>`:''}
-          ${s.links?.apple?`<a href="${esc(s.links.apple)}" target="_blank" rel="noopener">Apple Music ↗</a>`:''}
-          ${s.links?.deezer?`<a href="${esc(s.links.deezer)}" target="_blank" rel="noopener">Deezer ↗</a>`:''}
-          <a href="${esc(yt)}" target="_blank" rel="noopener">YouTube ↗</a>
+          ${s.links?.spotify?`<a href="${esc(s.links.spotify)}" target="_blank" rel="noopener">Spotify&nbsp;${ic('ext')}</a>`:''}
+          ${s.links?.apple?`<a href="${esc(s.links.apple)}" target="_blank" rel="noopener">Apple Music&nbsp;${ic('ext')}</a>`:''}
+          ${s.links?.deezer?`<a href="${esc(s.links.deezer)}" target="_blank" rel="noopener">Deezer&nbsp;${ic('ext')}</a>`:''}
+          <a href="${esc(yt)}" target="_blank" rel="noopener">YouTube&nbsp;${ic('ext')}</a>
         </div>
       </div>
     </section>
@@ -1914,13 +2114,13 @@ function showSong(s){
         <div class="sp-btns">
           <a class="sp-open" href="${esc(primary[1])}" target="_blank" rel="noopener">${ic('play')} ${esc(t('sp_open'))} ${esc(primary[0])}</a>
           <button class="sp-round" onclick="event.stopPropagation();document.getElementById('sp-menu').classList.toggle('open')" title="${esc(t('sp_links'))}">${ic('more')}</button>
-          ${s.preview?`<button class="sp-round tr-btn" id="sp-play" data-src="${esc(s.preview)}" onclick="togglePreview(this)">${ic('play')}</button>`:`<button class="sp-round tr-btn" id="sp-play" style="display:none" onclick="togglePreview(this)">${ic('play')}</button>`}
+          ${s.preview?`<button class="sp-round tr-btn" id="sp-play" data-src="${pm(s)}" onclick="togglePreview(this)">${ic('play')}</button>`:`<button class="sp-round tr-btn" id="sp-play" style="display:none" onclick="togglePreview(this)">${ic('play')}</button>`}
           <div class="sp-menu" id="sp-menu">
-            ${s.links?.spotify?`<a href="${esc(s.links.spotify)}" target="_blank" rel="noopener">Spotify ↗</a>`:''}
-            ${s.links?.apple?`<a href="${esc(s.links.apple)}" target="_blank" rel="noopener">Apple Music ↗</a>`:''}
-            <a id="sp-dz" href="${esc(s.links?.deezer||'#')}" target="_blank" rel="noopener" ${s.links?.deezer?'':'style="display:none"'}>Deezer ↗</a>
-            <a href="${esc(yt)}" target="_blank" rel="noopener">YouTube ↗</a>
-            ${s.links?.all?`<a href="${esc(s.links.all)}" target="_blank" rel="noopener">${esc(t('sp_links'))} ↗</a>`:''}
+            ${s.links?.spotify?`<a href="${esc(s.links.spotify)}" target="_blank" rel="noopener">Spotify&nbsp;${ic('ext')}</a>`:''}
+            ${s.links?.apple?`<a href="${esc(s.links.apple)}" target="_blank" rel="noopener">Apple Music&nbsp;${ic('ext')}</a>`:''}
+            <a id="sp-dz" href="${esc(s.links?.deezer||'#')}" target="_blank" rel="noopener" ${s.links?.deezer?'':'style="display:none"'}>Deezer&nbsp;${ic('ext')}</a>
+            <a href="${esc(yt)}" target="_blank" rel="noopener">YouTube&nbsp;${ic('ext')}</a>
+            ${s.links?.all?`<a href="${esc(s.links.all)}" target="_blank" rel="noopener">${esc(t('sp_links'))}&nbsp;${ic('ext')}</a>`:''}
             <button onclick="spShare()">${esc(t('sp_share'))}</button>
           </div>
         </div>
@@ -1942,9 +2142,9 @@ function showSong(s){
       </div>
       <div id="sp-sec-lyrics"><h3>${esc(t('sp_lyrics'))}</h3>
         <div class="sp-lyr" id="sp-lyr-box"><div class="sp-lyr-text" id="sp-lyr-text"><div class="sp-loading">${esc(t('sp_loading'))}</div></div><p id="sp-lyr-note" style="display:none">${esc(t('sp_lyrics_note'))}</p><div id="sp-lyr-links" style="display:none">
-          <a href="https://www.musixmatch.com/search/${encodeURIComponent(s.artist+' '+s.title)}" target="_blank" rel="noopener">Musixmatch <span>↗</span></a>
-          <a href="https://genius.com/search?q=${encodeURIComponent(s.artist+' '+s.title)}" target="_blank" rel="noopener">Genius <span>↗</span></a>
-          <a href="https://www.google.com/search?q=${encodeURIComponent(s.artist+' '+s.title+' lyrics')}" target="_blank" rel="noopener">Google <span>↗</span></a>
+          <a href="https://www.musixmatch.com/search/${encodeURIComponent(s.artist+' '+s.title)}" target="_blank" rel="noopener">Musixmatch <span>${ic('ext')}</span></a>
+          <a href="https://genius.com/search?q=${encodeURIComponent(s.artist+' '+s.title)}" target="_blank" rel="noopener">Genius <span>${ic('ext')}</span></a>
+          <a href="https://www.google.com/search?q=${encodeURIComponent(s.artist+' '+s.title+' lyrics')}" target="_blank" rel="noopener">Google <span>${ic('ext')}</span></a>
         </div></div>
       </div>
     </section>
@@ -1993,7 +2193,7 @@ async function loadSimilar(s){
   const tr=d.track,al=d.album,ar=d.artist;
   loadLyrics(s,tr.isrc);
   // fill hero gaps
-  if(!s.preview&&tr.preview){const b=document.getElementById('sp-play');b.dataset.src=tr.preview;b.style.display='';}
+  if(!s.preview&&tr.preview){const b=document.getElementById('sp-play');pm({...tr,title:s.title||tr.title,artist:s.artist||tr.artist,cover:s.cover||tr.cover});b.dataset.src=tr.preview;b.style.display='';}
   if(!s.cover&&(al?.cover||tr.coverBig)){const c=al?.cover||tr.coverBig;document.querySelector('.sp-cover').innerHTML=`<img src="${esc(c)}" alt=""/><button class="sp-round sp-share" onclick="spShare()">${ic('share')}</button>`;document.getElementById('sp-amb').style.backgroundImage=`url("${c}")`;}
   if(ar?.link){document.getElementById('sp-artist-link').href=ar.link;document.getElementById('sp-martist').href=ar.link;}
   if(!s.preview&&tr.preview){const mp=document.getElementById('sp-mplay');mp.dataset.src=tr.preview;mp.style.visibility='';}
@@ -2027,17 +2227,76 @@ function trackRows(list){
     <div class="track-row">
       ${t.cover?`<img src="${esc(t.cover)}" alt=""/>`:`<div class="song-cover" style="width:44px;height:44px;font-size:1rem;">${ic('music')}</div>`}
       <div class="tr-info"><div class="tr-title">${esc(t.title)}</div><div class="tr-artist">${esc(t.artist)}</div></div>
-      ${t.preview?`<button class="tr-btn" data-src="${esc(t.preview)}" onclick="togglePreview(this)">${ic('play')}</button>`:''}
+      ${t.preview?`<button class="tr-btn" data-src="${pm(t)}" onclick="togglePreview(this)">${ic('play')}</button>`:''}
       ${t.link?`<a class="tr-btn" href="${esc(t.link)}" target="_blank" rel="noopener" title="Open">${ic('ext')}</a>`:''}
     </div>`).join('');
 }
-function togglePreview(btn){
-  if(previewBtn===btn&&!previewAudio.paused){previewAudio.pause();btn.classList.remove('playing');btn.innerHTML=ic('play');return;}
-  if(previewBtn){previewBtn.classList.remove('playing');previewBtn.innerHTML=ic('play');}
-  previewBtn=btn;previewAudio.src=btn.dataset.src;previewAudio.play().catch(()=>{});
-  btn.classList.add('playing');btn.innerHTML=ic('pause');
+// ── FRAME PLAYER (bottom "now playing" bar) ──
+const PMETA={};
+function pm(o){const s=(o&&o.preview)||'';if(s&&!PMETA[s]){const a=o.artist;PMETA[s]={title:o.title||'',artist:(a&&typeof a==='object'?a.name:a)||'',cover:o.cover||o.coverBig||'',id:o.deezerId||o.id||null,artistId:o.artistId||(a&&a.id)||null};}return esc(s);}
+let pQueue=[],pIdx=-1;
+const fpEl=id=>document.getElementById(id);
+function fmtClock(s){s=Math.max(0,Math.floor(s||0));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function pCur(){return pQueue[pIdx]||'';}
+function syncPlayButtons(){
+  const cur=pCur(),on=!!cur&&!previewAudio.paused;
+  document.querySelectorAll('.tr-btn[data-src]').forEach(b=>{const me=on&&b.dataset.src===cur;if(b.classList.contains('playing')!==me||!b.dataset.ps){b.classList.toggle('playing',me);b.innerHTML=ic(me?'pause':'play');b.dataset.ps=1;}});
+  const pp=fpEl('fp-play');if(pp)pp.innerHTML=ic(on?'pause':'play');
+  fpEl('fp')?.classList.toggle('on',on);
 }
-previewAudio.onended=()=>{if(previewBtn){previewBtn.classList.remove('playing');previewBtn.innerHTML=ic('play');}};
+function pLoad(i){
+  if(i<0||i>=pQueue.length)return;pIdx=i;const src=pQueue[i],m=PMETA[src]||{};
+  fpEl('fp-cover').src=m.cover||'';fpEl('fp-cover').style.visibility=m.cover?'':'hidden';
+  fpEl('fp-title').textContent=m.title||'—';fpEl('fp-artist').textContent=m.artist||'';
+  fpEl('fp-prev').disabled=i<=0;fpEl('fp-next').disabled=playingAll&&i>=pQueue.length-1;
+  fpEl('fp-bar').value=0;fpEl('fp-bar').style.setProperty('--p','0%');fpEl('fp-cur').textContent='00:00';fpEl('fp-dur').textContent='00:30';
+  fpEl('fp').classList.add('show');document.getElementById('screen-music').classList.add('has-player');
+  const nx=PMETA[pQueue[i+1]];fpEl('fp-upnext').textContent=nx?' · '+t('up_next')+': '+nx.title:'';
+  previewAudio.src=src;previewAudio.play().catch(()=>{});syncPlayButtons();
+}
+function pQueueFrom(btn){
+  let el=btn.parentElement;for(let k=0;k<7&&el;k++){if(el.querySelectorAll('.tr-btn[data-src]').length>1)break;el=el.parentElement;}
+  const list=[...new Set([...(el||document).querySelectorAll('.tr-btn[data-src]')].map(b=>b.dataset.src).filter(Boolean))];
+  return list.includes(btn.dataset.src)?list:[btn.dataset.src];
+}
+function togglePreview(btn){
+  const src=btn.dataset.src;if(!src)return;
+  if(src===pCur()){playerToggle();return;}
+  if(playingAll)stopPlayAll(true);
+  pQueue=pQueueFrom(btn);pLoad(pQueue.indexOf(src));
+}
+function playerToggle(){if(!pCur())return;if(previewAudio.paused)previewAudio.play().catch(()=>{});else previewAudio.pause();}
+function playerPrev(){if(previewAudio.currentTime>3){previewAudio.currentTime=0;return;}pLoad(pIdx-1);}
+function playerNext(){playerNextAuto();}
+function playerSeek(v){if(previewAudio.duration)previewAudio.currentTime=previewAudio.duration*v/1000;}
+function playerMute(){previewAudio.muted=!previewAudio.muted;fpEl('fp-vol').innerHTML=ic(previewAudio.muted?'mute':'vol');}
+function playerVolume(v){previewAudio.volume=v/100;if(previewAudio.muted&&v>0)playerMute();}
+function playerClose(){previewAudio.pause();if(playingAll)stopPlayAll(true);pQueue=[];pIdx=-1;fpEl('fp').classList.remove('show');document.getElementById('screen-music').classList.remove('has-player');syncPlayButtons();}
+previewAudio.addEventListener('play',syncPlayButtons);
+previewAudio.addEventListener('pause',syncPlayButtons);
+previewAudio.addEventListener('loadedmetadata',()=>{fpEl('fp-dur').textContent=fmtClock(previewAudio.duration);});
+previewAudio.addEventListener('timeupdate',()=>{const d=previewAudio.duration||30,c=previewAudio.currentTime,b=fpEl('fp-bar');fpEl('fp-cur').textContent=fmtClock(c);if(!b.matches(':active')){b.value=Math.round(c/d*1000);b.style.setProperty('--p',(c/d*100)+'%');}});
+previewAudio.addEventListener('ended',async()=>{
+  if(pIdx<pQueue.length-1){pLoad(pIdx+1);return;}
+  if(playingAll){stopPlayAll(true);previewAudio.currentTime=0;syncPlayButtons();return;}
+  // end of the list: keep the music going with songs like the last one (radio)
+  if(await pExtend())pLoad(pIdx+1);else{previewAudio.currentTime=0;syncPlayButtons();}
+});
+let pExtending=false;
+async function pExtend(){
+  const m=PMETA[pCur()]||{};if(pExtending||(!m.artistId&&!m.artist))return false;pExtending=true;
+  try{
+    const q=m.artistId?'artistId='+encodeURIComponent(m.artistId):'artist='+encodeURIComponent(m.artist)+'&title='+encodeURIComponent(m.title||'');
+    const d=await (await fetch('/api/music/similar?'+q+'&trackId='+encodeURIComponent(m.id||''))).json();
+    const seen=new Set(pQueue);
+    const add=[...(d.similar||[]),...(d.sameArtist||[])].filter(x=>x&&x.preview&&!seen.has(x.preview));
+    for(let i=add.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[add[i],add[j]]=[add[j],add[i]];}
+    add.slice(0,8).forEach(x=>{pm(x);pQueue.push(x.preview);});
+    fpEl('fp-next').disabled=pIdx>=pQueue.length-1;
+    return add.length>0;
+  }catch(e){return false;}finally{pExtending=false;}
+}
+async function playerNextAuto(){if(pIdx<pQueue.length-1){pLoad(pIdx+1);return;}if(await pExtend())pLoad(pIdx+1);}
 function getMusicHistory(){try{return JSON.parse(localStorage.getItem('fc_music')||'[]');}catch(e){return [];}}
 function setMusicHistory(h){try{localStorage.setItem('fc_music',JSON.stringify(h.slice(0,150)));}catch(e){}}
 function saveMusicHistory(s){
@@ -2050,7 +2309,7 @@ function renderMusicHistory(){
   document.getElementById('fm-mycount').textContent=h.length+' '+t('lib_songs');
   document.getElementById('fm-finds').style.display=h.length?'':'none';
   el.innerHTML=h.slice(0,12).map((x,i)=>`
-    <div class="fm-tile" onclick="reopenFind(${i})"><div class="cvw">${x.cover?`<img src="${esc(x.cover)}" alt="" loading="lazy"/>`:'<img alt=""/>'}${x.preview?`<button class="pbtn tr-btn" data-src="${esc(x.preview)}" onclick="event.stopPropagation();togglePreview(this)">${ic('play')}</button>`:''}</div><b>${esc(x.title)}</b><span>${esc(x.artist)}</span></div>`).join('');
+    <div class="fm-tile" onclick="reopenFind(${i})"><div class="cvw">${x.cover?`<img src="${esc(x.cover)}" alt="" loading="lazy"/>`:'<img alt=""/>'}${x.preview?`<button class="pbtn tr-btn" data-src="${pm(x)}" onclick="event.stopPropagation();togglePreview(this)">${ic('play')}</button>`:''}</div><b>${esc(x.title)}</b><span>${esc(x.artist)}</span></div>`).join('');
   if(document.getElementById('fm-lib').classList.contains('open'))renderLibrary();
 }
 // ── LIBRARY ──
@@ -2064,7 +2323,7 @@ function libGroupLabel(ts){
 function libPlatform(x){return x.links?.spotify?'Spotify':x.links?.apple?'Apple Music':x.links?.deezer?'Deezer':'';}
 function libRow(x,i){
   return `<div class="lib-row" onclick="reopenFind(${i})">
-    <div class="cv">${x.cover?`<img src="${esc(x.cover)}" alt="" loading="lazy"/>`:`<div class="ph">${ic('music','lg')}</div>`}${x.preview?`<button class="tr-btn" data-src="${esc(x.preview)}" onclick="event.stopPropagation();togglePreview(this)">${ic('play')}</button>`:''}</div>
+    <div class="cv">${x.cover?`<img src="${esc(x.cover)}" alt="" loading="lazy"/>`:`<div class="ph">${ic('music','lg')}</div>`}${x.preview?`<button class="tr-btn" data-src="${pm(x)}" onclick="event.stopPropagation();togglePreview(this)">${ic('play')}</button>`:''}</div>
     <div class="tx"><b>${esc(x.title)}</b><span>${esc(x.artist)} · ${new Date(x.ts).toLocaleString(LANG,{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span>${libPlatform(x)?`<em>${esc(libPlatform(x))}</em>`:''}</div>
     <button class="lib-more" onclick="event.stopPropagation();libMenu(${i},this)">${ic('more')}</button>
   </div>`;
@@ -2074,7 +2333,7 @@ function renderLibrary(){
   document.getElementById('lib-count').textContent=h.length+' '+t('lib_songs');
   document.getElementById('lib-play').style.display=h.some(x=>x.preview)?'':'none';
   const last=h[0];
-  document.getElementById('lib-last').innerHTML=last?`<div class="lib-last" style="background-image:url('${esc(last.cover||'')}')" onclick="reopenFind(0)"><small>${esc(t('last_find'))} · ${new Date(last.ts).toLocaleDateString(LANG,{weekday:'long',day:'numeric',month:'long'})}</small>${last.preview?`<button class="pl tr-btn" data-src="${esc(last.preview)}" onclick="event.stopPropagation();togglePreview(this)">${ic('play')}</button>`:''}<b>${esc(last.title)}</b><span>${esc(last.artist)}</span></div>`:'';
+  document.getElementById('lib-last').innerHTML=last?`<div class="lib-last" style="background-image:url('${esc(last.cover||'')}')" onclick="reopenFind(0)"><small>${esc(t('last_find'))} · ${new Date(last.ts).toLocaleDateString(LANG,{weekday:'long',day:'numeric',month:'long'})}</small>${last.preview?`<button class="pl tr-btn" data-src="${pm(last)}" onclick="event.stopPropagation();togglePreview(this)">${ic('play')}</button>`:''}<b>${esc(last.title)}</b><span>${esc(last.artist)}</span></div>`:'';
   const list=document.getElementById('lib-list');
   if(!h.length){list.innerHTML=`<div class="lib-empty">${esc(t('lib_empty'))}<br/><button class="fm-cta" onclick="closeLibrary();openListen(true)"><span class="fm-cta-ic"><svg class="ic"><use href="#i-headphones"/></svg></span><span>${esc(t('fm_cta'))}</span></button></div>`;return;}
   if(libMode==='artists'){
@@ -2106,22 +2365,19 @@ function libMenu(i,btn){
 document.addEventListener('click',()=>{document.querySelectorAll('.lib-menu').forEach(m=>m.remove());libMenuOpen=null;});
 function removeFind(i){const h=getMusicHistory();h.splice(i,1);setMusicHistory(h);libMenuOpen=null;renderMusicHistory();renderLibrary();}
 function openLibrary(){libMode='all';document.querySelectorAll('.lib-chips button').forEach(b=>b.classList.toggle('on',b.dataset.f==='all'));renderLibrary();document.getElementById('fm-lib').classList.add('open');setNavOn('library');}
-function closeLibrary(){document.getElementById('fm-lib').classList.remove('open');setNavOn('home');stopPlayAll();}
-// play all previews in order
-let playQueue=[],playingAll=false;
+function closeLibrary(){document.getElementById('fm-lib').classList.remove('open');setNavOn('home');stopPlayAll(true);}
+// play all previews in order (through the player bar)
+let playingAll=false;
 function playAllFinds(){
   if(playingAll){stopPlayAll();return;}
-  playQueue=getMusicHistory().filter(x=>x.preview).map(x=>x.preview);
-  if(!playQueue.length)return;
-  playingAll=true;document.getElementById('lib-play').classList.add('on');document.getElementById('lib-play').innerHTML=ic('stop')+' '+esc(t('stop_all'));
-  const next=()=>{if(!playingAll)return;const src=playQueue.shift();if(!src){stopPlayAll();return;}previewAudio.src=src;previewAudio.play().catch(()=>stopPlayAll());};
-  previewAudio.onended=()=>{if(playingAll)next();else if(previewBtn){previewBtn.classList.remove('playing');previewBtn.innerHTML=ic('play');}};
-  next();
+  const list=getMusicHistory().filter(x=>x.preview);if(!list.length)return;
+  list.forEach(x=>pm(x));pQueue=[...new Set(list.map(x=>x.preview))];
+  playingAll=true;const b=document.getElementById('lib-play');b.classList.add('on');b.innerHTML=ic('stop')+' '+esc(t('stop_all'));
+  pLoad(0);
 }
-function stopPlayAll(){
-  if(!playingAll)return;playingAll=false;previewAudio.pause();
+function stopPlayAll(keepPlaying){
+  if(!playingAll)return;playingAll=false;if(!keepPlaying)previewAudio.pause();
   const b=document.getElementById('lib-play');b.classList.remove('on');b.innerHTML=ic('play')+' <span data-i18n="play_all">'+esc(t('play_all'))+'</span>';
-  previewAudio.onended=()=>{if(previewBtn){previewBtn.classList.remove('playing');previewBtn.innerHTML=ic('play');}};
 }
 // ── SETTINGS ──
 const PLATFORMS=[['spotify','Spotify','#1db954','S'],['apple','Apple Music','#fa2d48','A'],['deezer','Deezer','#a238ff','D'],['youtube','YouTube','#ff0000','▶']];
@@ -2165,9 +2421,9 @@ en:{st_wait:'WAIT',st_live:'LIVE',ring_wait:'WAIT',ring_live:'LIVE',sub_wait:'WA
  end_confirm:'END & DELETE this chat for BOTH of you?\nEvery message, photo and voice note will be erased forever.',
  info_title:'WHAT IS FRAME?',info_lead:'A private chat room for exactly two people, plus Frame Music. Share a one-time link, talk, then erase everything — no history, no traces.',
  feats:[['NO ACCOUNTS','No sign-up, no login, no email, no phone number. Open Frame and start talking. Each chat is locked to exactly two people.'],['FREE','Free to use while the chat is active.'],['NOTHING STORED','Messages pass through the server’s memory only. Nothing is written to a database or disk.'],['END = ERASE ALL','Either person taps END and every message, photo, voice note and the code disappear for both, instantly.'],['PHOTOS ONCE','Each photo can be opened once. When you close it, it is destroyed on your device and never kept in the chat history.'],['ANTI-COPY','Copying and the right-click menu are blocked on the chat. Phone screenshots are still possible.'],['DISAPPEARING ROOM','A chat with nobody in it for 10 minutes deletes itself, and every chat dies after 24 hours at most.'],['ONE-TIME LINK','The invite link works once and expires after 10 minutes if nobody uses it.'],['CALLS','Voice and video calls connect directly between the two browsers (peer-to-peer).'],['FRAME MUSIC','Hear a song? Tap and Frame tells you its name, the artist and similar songs.']],
- faq_h:'▸ FREQUENTLY ASKED QUESTIONS',
+ faq_h:'FREQUENTLY ASKED QUESTIONS',
  faqs:[['Is Frame free?','Yes. Private chats and Frame Music are free to use.'],['Do I need to sign up or create an account?','No. There are no accounts and no login. Frame gives you a random name (you can change it) and a private key that stays only in your browser.'],['Are messages private and encrypted?','Connections use HTTPS encryption, chats are locked to two people, and nothing is saved. Messages do pass through our server’s memory while you chat, so this is not end-to-end encryption.'],['How long does a chat last?','Until one of you taps END, the chat is empty for 10 minutes, or 24 hours pass — whichever comes first.'],['Can I send photos and voice notes?','Yes. Photos are view-once. Voice notes stay until the chat ends.'],['What happens if I lose the link?','Tap INVITE again for a new one. The old link stops working. You can also share the secret code.']],
- terms:'TERMS OF SERVICE',privacy:'PRIVACY POLICY',fm_kicker:'UPDATED DAILY',fm_h1:'What the world is listening to right now',fm_sub:'Hear something you love? Tap the Frame button and get the song, the artist and more like it — in seconds.',fm_cta:'TAP TO FRAME A SONG',fm_upload:'or upload a clip',nav_identify:'Identify',nav_charts:'Charts',nav_afro:'Afro Heat',nav_finds:'My Finds',sec_trending:'Trending now',sec_rank:'#{n} on the global chart this week',top10:'Top 10 today',afro:'Afro Heat',artists:'Artists on the rise',finds:'My finds',search_ph:'Search a song or artist...',fm_foot:'charts by Deezer · recognition by AudD',fm_offline:'// charts are unavailable right now',fl_tap:'Tap to Frame',fl_tap_sub:'Play a song near your device, then tap the button',fl_listening:'Listening…',fl_listen_sub:'Hold your device close to the music',fl_searching:'Searching for a match',fl_wait:'Please wait',fl_cancel:'CANCEL',fl_again:'FRAME ANOTHER SONG',fl_nomatch:'No match found. Try again closer to the speaker, during the chorus.',fl_short:'Too short. Hold your device closer to the music and try again.',fl_nomic:'Microphone access was denied. Allow it in your browser, or upload a clip.',fl_norec:'This browser cannot record. Try uploading a clip instead.',fl_err:'Connection failed. Check your internet and try again.',sp_identified:'IDENTIFIED',sp_open:'Open in',sp_links:'More places to listen',sp_share:'Share',sp_copy:'Copy link',sp_copied:'Link copied',sp_tab_match:'Matched moment',sp_tab_details:'Song details',sp_matched:'Matched at {a} of {b}',sp_heard:'This is the part of the song Frame heard and recognised.',sp_nomatch_info:'Opened from search or charts — no recording for this song.',sp_album:'Album',sp_released:'Released',sp_label:'Label',sp_genre:'Genre',sp_length:'Length',sp_bpm:'BPM',sp_video:'Music video',sp_watch:'WATCH ON YOUTUBE',sp_lyrics:'Lyrics',sp_lyrics_note:'Song lyrics are protected by copyright, so Frame sends you to services that are licensed to show them.',sp_from_album:'From the album',sp_featured:'Featured in',sp_top_by:'Top songs by',sp_similar:'Similar songs',sp_artist:'Artist',sp_fans:'fans',sp_albums:'albums',sp_credits:'Credits',sp_main:'Main artist',sp_feat:'Featured artist',sp_playlist:'PLAYLIST',sp_tracks:'tracks',sp_loading:'loading…',lyr_partial:'Preview of the lyrics — open the full lyrics below.',lyr_none:'No lyrics found for this song yet.',hx_chat_t:'Private Chat',ho_l1a:'Talk',ho_l1b:'privately.',ho_l2a:'Find',ho_l2b:'any song.',ho_hint:'Tap to Frame a song',ho_chat_sub:'One-time link · erase everything',ho_resume_sub:'Your chat is open — tap to continue',ho_music_sub:'Charts · library · song pages',hx_morning:'Good morning',hx_afternoon:'Good afternoon',hx_evening:'Good evening',hx_h1:'Talk privately. Find any song.',hx_tag:'One app, two powers — chats that leave no trace, and music recognition in seconds.',hx_chat_sub:'1-on-1 · one-time link · erase everything',hx_b1:'Is this chat really private?',hx_b2:'Just us two. Nothing is saved.',hx_b3:'Photo · view once',hx_b4:'When we’re done, I tap END 🔥',hx_p1:'One-time invite link',hx_p2:'Locked to two people',hx_p3:'END erases it for both',hx_chat_cta:'START A CHAT',hx_resume:'RESUME CHAT',hx_waiting:'Waiting for guest',hx_with:'Chatting with {n}',hx_music_sub:'Hear it · tap it · know it',hx_charts:'Charts ›',hx_music_cta:'IDENTIFY A SONG',hx_last:'Last find',hx_f1:'No accounts',hx_f1d:'No sign-up, no email, no phone number.',hx_f2:'Nothing stored',hx_f2d:'Chats live in memory and vanish when you end them.',hx_f3:'Songs in seconds',hx_f3d:'Name, artist, preview and songs like it.',have_code:'Have a code from someone?',join_code:'Join with code',no_chats:'// no chats yet — start one or join with a code',m_tap:'Tap to Frame',fm_sub_short:'Get any song’s name, artist and more like it.',m_mymusic:'My Music',recently:'Recently framed',see_all:'SEE ALL',nav_home:'Home',nav_library:'Library',lib:'Library',lib_songs:'songs',lib_all:'All',lib_artists:'Artists',play_all:'PLAY ALL',stop_all:'STOP',last_find:'Last find',g_today:'Today',g_yesterday:'Yesterday',g_week:'This week',g_earlier:'Earlier',lib_empty:'No finds yet. Tap the Frame button to find your first song.',remove:'Remove',settings:'Settings',set_stream:'OPEN SONGS IN',set_prefs:'PREFERENCES',set_auto:'Frame on app start',set_auto_d:'Start listening as soon as you open Frame Music',set_haptic:'Haptic feedback',set_haptic_d:'Vibrate when a song is found',set_lang:'Language',set_clear:'Clear my finds',set_clear_c:'Delete all your finds from this device?',tab_song:'SONG',tab_lyrics:'LYRICS',tab_video:'VIDEO',tab_artist:'ARTIST',m_open:'OPEN',found_via:'Found with Frame',
+ terms:'TERMS OF SERVICE',privacy:'PRIVACY POLICY',fm_kicker:'UPDATED DAILY',fm_h1:'What the world is listening to right now',fm_sub:'Hear something you love? Tap the Frame button and get the song, the artist and more like it — in seconds.',fm_cta:'TAP TO FRAME A SONG',fm_upload:'or upload a clip',nav_identify:'Identify',nav_charts:'Charts',nav_afro:'Afro Heat',nav_finds:'My Finds',sec_trending:'Trending now',sec_rank:'#{n} on the global chart this week',top10:'Top 10 today',afro:'Afro Heat',artists:'Artists on the rise',finds:'My finds',search_ph:'Search a song or artist...',fm_foot:'charts by Deezer · recognition by AudD',fm_offline:'// charts are unavailable right now',fl_tap:'Tap to Frame',fl_tap_sub:'Play a song near your device, then tap the button',fl_listening:'Listening…',fl_listen_sub:'Hold your device close to the music',fl_searching:'Searching for a match',fl_wait:'Please wait',fl_cancel:'CANCEL',fl_again:'FRAME ANOTHER SONG',fl_nomatch:'No match found. Try again closer to the speaker, during the chorus.',fl_short:'Too short. Hold your device closer to the music and try again.',fl_nomic:'Microphone access was denied. Allow it in your browser, or upload a clip.',fl_norec:'This browser cannot record. Try uploading a clip instead.',fl_err:'Connection failed. Check your internet and try again.',sp_identified:'IDENTIFIED',sp_open:'Open in',sp_links:'More places to listen',sp_share:'Share',sp_copy:'Copy link',sp_copied:'Link copied',sp_tab_match:'Matched moment',sp_tab_details:'Song details',sp_matched:'Matched at {a} of {b}',sp_heard:'This is the part of the song Frame heard and recognised.',sp_nomatch_info:'Opened from search or charts — no recording for this song.',sp_album:'Album',sp_released:'Released',sp_label:'Label',sp_genre:'Genre',sp_length:'Length',sp_bpm:'BPM',sp_video:'Music video',sp_watch:'WATCH ON YOUTUBE',sp_lyrics:'Lyrics',sp_lyrics_note:'Song lyrics are protected by copyright, so Frame sends you to services that are licensed to show them.',sp_from_album:'From the album',sp_featured:'Featured in',sp_top_by:'Top songs by',sp_similar:'Similar songs',sp_artist:'Artist',sp_fans:'fans',sp_albums:'albums',sp_credits:'Credits',sp_main:'Main artist',sp_feat:'Featured artist',sp_playlist:'PLAYLIST',sp_tracks:'tracks',sp_loading:'loading…',lyr_partial:'Preview of the lyrics — open the full lyrics below.',lyr_none:'No lyrics found for this song yet.',hx_chat_t:'Private Chat',ho_l1a:'Talk',ho_l1b:'privately.',ho_l2a:'Find',ho_l2b:'any song.',ho_hint:'Tap to Frame a song',ho_chat_sub:'One-time link · erase everything',ho_resume_sub:'Your chat is open — tap to continue',ho_music_sub:'Charts · library · song pages',hx_morning:'Good morning',hx_afternoon:'Good afternoon',hx_evening:'Good evening',hx_h1:'Talk privately. Find any song.',hx_tag:'One app, two powers — chats that leave no trace, and music recognition in seconds.',hx_chat_sub:'1-on-1 · one-time link · erase everything',hx_b1:'Is this chat really private?',hx_b2:'Just us two. Nothing is saved.',hx_b3:'Photo · view once',hx_b4:'When we’re done, I tap END.',hx_p1:'One-time invite link',hx_p2:'Locked to two people',hx_p3:'END erases it for both',hx_chat_cta:'START A CHAT',hx_resume:'RESUME CHAT',hx_waiting:'Waiting for guest',hx_with:'Chatting with {n}',hx_music_sub:'Hear it · tap it · know it',hx_charts:'Charts ›',hx_music_cta:'IDENTIFY A SONG',hx_last:'Last find',hx_f1:'No accounts',hx_f1d:'No sign-up, no email, no phone number.',hx_f2:'Nothing stored',hx_f2d:'Chats live in memory and vanish when you end them.',hx_f3:'Songs in seconds',hx_f3d:'Name, artist, preview and songs like it.',have_code:'Have a code from someone?',join_code:'Join with code',no_chats:'// no chats yet — start one or join with a code',m_tap:'Tap to Frame',fm_sub_short:'Get any song’s name, artist and more like it.',m_mymusic:'My Music',recently:'Recently framed',see_all:'SEE ALL',nav_home:'Home',nav_library:'Library',lib:'Library',lib_songs:'songs',lib_all:'All',lib_artists:'Artists',play_all:'PLAY ALL',stop_all:'STOP',last_find:'Last find',g_today:'Today',g_yesterday:'Yesterday',g_week:'This week',g_earlier:'Earlier',lib_empty:'No finds yet. Tap the Frame button to find your first song.',remove:'Remove',settings:'Settings',set_stream:'OPEN SONGS IN',set_prefs:'PREFERENCES',set_auto:'Frame on app start',set_auto_d:'Start listening as soon as you open Frame Music',set_haptic:'Haptic feedback',set_haptic_d:'Vibrate when a song is found',set_lang:'Language',set_clear:'Clear my finds',set_clear_c:'Delete all your finds from this device?',tab_song:'SONG',tab_lyrics:'LYRICS',tab_video:'VIDEO',tab_artist:'ARTIST',m_open:'OPEN',found_via:'Found with Frame',now_playing:'Now Previewing',up_next:'Up next',search_music:'Search for music',recent_searches:'Recent searches',clear:'Clear',search_hint_t:'Find any song',search_hint:'Search by song title, artist or album.',searching:'Searching…',search_fail:'Search failed. Check your connection and try again.',search_none:'No results',search_none_d:'Check the spelling or try another song or artist.',top_result:'Top result',song:'Song ·',songs:'Songs',artists_h:'Artists',see_all_results:'See all results for',
  sp_l1:'Welcome to Frame.',sp_l2:'Talk in private. Erase everything. Discover the music around you.',sp_t1:'PRIVATE',sp_t2:'NO TRACES',sp_t3:'MUSIC',sp_tap:'tap anywhere to enter',welcome_anon:'WELCOME TO FRAME',welcome_name:'WELCOME BACK, ',nm_first_title:'CHOOSE YOUR NAME',nm_first_q:'This is how the other person will see you in the chat. No account, no email — just a name.',nm_enter:'ENTER CHAT ›',nm_random:'random name'},
 rw:{st_wait:'TEGEREZA',st_live:'LIVE',ring_wait:'TEGEREZA',ring_live:'LIVE',sub_wait:'UTEGEREJE UMUSHYITSI',sub_live:'MWAHUYE · 1-KURI-1',sub_away:'UMUSHYITSI YAVUYEMO',
  led_wait:'TUTEGEREJE UMUSHYITSI WAWE...',led_live:'MWAHUYE · NTA KIBIKWA · KANDA SOZA USIBE BYOSE',led_away:'UMUSHYITSI WAWE YAVUYEMO... CHAT YISIBA NYUMA Y’IMINOTA 10 NTA MUNTU URIMO',
@@ -2182,9 +2438,9 @@ rw:{st_wait:'TEGEREZA',st_live:'LIVE',ring_wait:'TEGEREZA',ring_live:'LIVE',sub_
  end_confirm:'GUSOZA NO GUSIBA iyi chat kuri MWEMBI?\nUbutumwa bwose, amafoto n’amajwi bizasibwa burundu.',
  info_title:'FRAME NI IKI?',info_lead:'Icyumba cyo kuganira cy’abantu babiri gusa, hamwe na Frame Music. Ohereza link ikoreshwa rimwe, muganire, hanyuma musibe byose — nta mateka, nta kimenyetso.',
  feats:[['NTA KONTI','Nta kwiyandikisha, nta login, nta email, nta nimero ya telefoni. Fungura Frame utangire kuganira. Buri chat ifungirwa abantu babiri gusa.'],['UBUNTU','Ikoreshwa ku buntu igihe chat ikiriho.'],['NTA KIBIKWA','Ubutumwa buca muri memory ya server gusa. Nta na kimwe cyandikwa muri database cyangwa kuri disk.'],['SOZA = SIBA BYOSE','Umwe muri mwe akanda SOZA, ubutumwa bwose, amafoto, amajwi na code bigahita bisibwa kuri mwembi.'],['IFOTO IREBWA RIMWE','Buri foto ifungurwa rimwe. Iyo uyifunze, irasibwa kuri telefoni yawe kandi ntibikwa mu mateka ya chat.'],['NTA GUKOPORORA','Gukoporora no gukanda iburyo birabujijwe muri chat. Screenshot za telefoni zo zirashoboka.'],['ICYUMBA KIBURA','Chat imaze iminota 10 nta muntu uyirimo irisiba, kandi nta chat irenza amasaha 24.'],['LINK IKORESHWA RIMWE','Link y’ubutumire ikora rimwe gusa, ikarangira nyuma y’iminota 10 niba nta wayikoresheje.'],['GUHAMAGARA','Voice na video call bihuza browser zombi ku buryo butaziguye (peer-to-peer).'],['FRAME MUSIC','Wumvise indirimbo? Kanda, Frame ikubwire izina ryayo, umuhanzi n’izindi zisa nayo.']],
- faq_h:'▸ IBIBAZO BIKUNZE KUBAZWA',
+ faq_h:'IBIBAZO BIKUNZE KUBAZWA',
  faqs:[['Frame ni ubuntu?','Yego. Chat zihariye na Frame Music bikoreshwa ku buntu.'],['Nkenera kwiyandikisha cyangwa konti?','Oya. Nta konti nta login. Frame iguha izina ry’impfabusa (ushobora kurihindura) n’urufunguzo rwihariye ruguma muri browser yawe gusa.'],['Ubutumwa burihariye kandi burinzwe?','Ihuzanya rikoresha HTTPS, chat ifungirwa abantu babiri, kandi nta kibikwa. Gusa ubutumwa buca muri memory ya server igihe muganira, bityo si end-to-end encryption.'],['Chat imara igihe kingana iki?','Kugeza umwe akanze SOZA, chat imaze iminota 10 irimo ubusa, cyangwa amasaha 24 ashize — icyabanje.'],['Nshobora kohereza amafoto n’amajwi?','Yego. Amafoto arebwa rimwe. Amajwi aguma kugeza chat irangiye.'],['Natakaza link bigenda bite?','Ongera ukande TUMIRA ubone indi. Iya kera ntiba igikora. Ushobora no gusangiza code.']],
- terms:'AMABWIRIZA',privacy:'IBANGA',fm_kicker:'BIVUGURURWA BURI MUNSI',fm_h1:'Ibyo isi iri kumva ubu',fm_sub:'Wumvise indirimbo ikunyuze? Kanda buto ya Frame ubone izina ryayo, umuhanzi n’izindi zisa nayo — mu masegonda make.',fm_cta:'KANDA UMENYE INDIRIMBO',fm_upload:'cyangwa ushyiremo audio',nav_identify:'Menya indirimbo',nav_charts:'Charts',nav_afro:'Afro Heat',nav_finds:'Izo nabonye',sec_trending:'Iziri kugezweho',sec_rank:'Ya {n} ku isi muri iki cyumweru',top10:'10 za mbere uyu munsi',afro:'Afro Heat',artists:'Abahanzi bari kuzamuka',finds:'Izo nabonye',search_ph:'Shakisha indirimbo cyangwa umuhanzi...',fm_foot:'charts za Deezer · kumenya indirimbo na AudD',fm_offline:'// charts ntiziboneka ubu',fl_tap:'Kanda umenye indirimbo',fl_tap_sub:'Curanga indirimbo hafi y’igikoresho cyawe, hanyuma ukande buto',fl_listening:'Ndumva…',fl_listen_sub:'Egereza igikoresho cyawe aho umuziki uri',fl_searching:'Ndimo gushakisha',fl_wait:'Tegereza gato',fl_cancel:'HAGARIKA',fl_again:'SHAKISHA INDI NDIRIMBO',fl_nomatch:'Nta ndirimbo ibonetse. Ongera ugerageze wegereye aho umuziki uri, mu gice cya chorus.',fl_short:'Byabaye bigufi cyane. Egereza igikoresho umuziki wongere ugerageze.',fl_nomic:'Mikoro yanzwe. Yemerere muri browser, cyangwa ushyiremo audio.',fl_norec:'Iyi browser ntishobora gufata amajwi. Gerageza gushyiramo audio.',fl_err:'Ihuzanya ryanze. Reba internet yawe wongere ugerageze.',sp_identified:'YABONETSE',sp_open:'Fungura kuri',sp_links:'Ahandi wayumvira',sp_share:'Sangiza',sp_copy:'Koporora link',sp_copied:'Link yakoporowe',sp_tab_match:'Aho yafatiwe',sp_tab_details:'Amakuru y’indirimbo',sp_matched:'Yafatiwe ku {a} muri {b}',sp_heard:'Iki ni cyo gice cy’indirimbo Frame yumvise ikakimenya.',sp_nomatch_info:'Yafunguwe uvuye mu gushakisha cyangwa muri charts — nta jwi ryafashwe.',sp_album:'Album',sp_released:'Yasohotse',sp_label:'Label',sp_genre:'Ubwoko',sp_length:'Uburebure',sp_bpm:'BPM',sp_video:'Amashusho',sp_watch:'REBA KURI YOUTUBE',sp_lyrics:'Amagambo',sp_lyrics_note:'Amagambo y’indirimbo arinzwe n’uburenganzira bw’abanditsi, bityo Frame ikohereza ku mbuga zifite uburenganzira bwo kuyerekana.',sp_from_album:'Kuri album imwe',sp_featured:'Iboneka muri',sp_top_by:'Indirimbo zikunzwe za',sp_similar:'Indirimbo zisa nayo',sp_artist:'Umuhanzi',sp_fans:'abafana',sp_albums:'albums',sp_credits:'Abayikoze',sp_main:'Umuhanzi mukuru',sp_feat:'Umuhanzi wafashije',sp_playlist:'PLAYLIST',sp_tracks:'indirimbo',sp_loading:'birimo kuza…',lyr_partial:'Iki ni igice cy’amagambo — fungura amagambo yose hano hasi.',lyr_none:'Amagambo y’iyi ndirimbo ntaraboneka.',hx_chat_t:'Chat yihariye',ho_l1a:'Ganira',ho_l1b:'mu ibanga.',ho_l2a:'Menya',ho_l2b:'indirimbo iyo ari yo yose.',ho_hint:'Kanda umenye indirimbo',ho_chat_sub:'Link imwe · siba byose',ho_resume_sub:'Chat yawe irafunguye — kanda ukomeze',ho_music_sub:'Charts · library · indirimbo',hx_morning:'Mwaramutse',hx_afternoon:'Mwiriwe',hx_evening:'Mwiriwe',hx_h1:'Ganira mu ibanga. Menya indirimbo iyo ari yo yose.',hx_tag:'App imwe, ubushobozi bubiri — chat zidasiga ikimenyetso, no kumenya indirimbo mu masegonda make.',hx_chat_sub:'1-kuri-1 · link imwe · siba byose',hx_b1:'Iyi chat koko ni ibanga?',hx_b2:'Ni twe twenyine. Nta kibikwa.',hx_b3:'Ifoto · irebwa rimwe',hx_b4:'Nidusoza, nkanda SOZA 🔥',hx_p1:'Link y’ubutumire imwe',hx_p2:'Ifungirwa abantu babiri',hx_p3:'SOZA isiba byose ku bombi',hx_chat_cta:'TANGIZA CHAT',hx_resume:'KOMEZA CHAT',hx_waiting:'Utegereje umushyitsi',hx_with:'Uganira na {n}',hx_music_sub:'Umva · kanda · menya',hx_charts:'Charts ›',hx_music_cta:'MENYA INDIRIMBO',hx_last:'Iya nyuma',hx_f1:'Nta konti',hx_f1d:'Nta kwiyandikisha, nta email, nta nimero.',hx_f2:'Nta kibikwa',hx_f2d:'Chat ziba muri memory gusa, zigasibama iyo uzisoje.',hx_f3:'Indirimbo mu masegonda',hx_f3d:'Izina, umuhanzi, preview n’izisa nayo.',have_code:'Hari uwaguhaye code?',join_code:'Injira ukoresheje code',no_chats:'// nta chat urafungura — tangiza imwe cyangwa winjire ukoresheje code',m_tap:'Kanda umenye indirimbo',fm_sub_short:'Menya izina ry’indirimbo iyo ari yo yose, umuhanzi n’izisa nayo.',m_mymusic:'Umuziki wanjye',recently:'Izo uherutse kubona',see_all:'REBA ZOSE',nav_home:'Ahabanza',nav_library:'Library',lib:'Library',lib_songs:'indirimbo',lib_all:'Zose',lib_artists:'Abahanzi',play_all:'CURANGA ZOSE',stop_all:'HAGARIKA',last_find:'Iya nyuma wabonye',g_today:'Uyu munsi',g_yesterday:'Ejo',g_week:'Iki cyumweru',g_earlier:'Mbere',lib_empty:'Nta ndirimbo urabona. Kanda buto ya Frame ubone iya mbere.',remove:'Siba',settings:'Igenamiterere',set_stream:'FUNGURA INDIRIMBO KURI',set_prefs:'IBYO UKUNDA',set_auto:'Frame itangire yonyine',set_auto_d:'Itangire kumva ukimara gufungura Frame Music',set_haptic:'Kunyeganyega',set_haptic_d:'Telefoni inyeganyege iyo indirimbo ibonetse',set_lang:'Ururimi',set_clear:'Siba indirimbo nabonye',set_clear_c:'Gusiba indirimbo zose wabonye kuri iki gikoresho?',tab_song:'INDIRIMBO',tab_lyrics:'AMAGAMBO',tab_video:'VIDEO',tab_artist:'UMUHANZI',m_open:'FUNGURA',found_via:'Yabonetse na Frame',
+ terms:'AMABWIRIZA',privacy:'IBANGA',fm_kicker:'BIVUGURURWA BURI MUNSI',fm_h1:'Ibyo isi iri kumva ubu',fm_sub:'Wumvise indirimbo ikunyuze? Kanda buto ya Frame ubone izina ryayo, umuhanzi n’izindi zisa nayo — mu masegonda make.',fm_cta:'KANDA UMENYE INDIRIMBO',fm_upload:'cyangwa ushyiremo audio',nav_identify:'Menya indirimbo',nav_charts:'Charts',nav_afro:'Afro Heat',nav_finds:'Izo nabonye',sec_trending:'Iziri kugezweho',sec_rank:'Ya {n} ku isi muri iki cyumweru',top10:'10 za mbere uyu munsi',afro:'Afro Heat',artists:'Abahanzi bari kuzamuka',finds:'Izo nabonye',search_ph:'Shakisha indirimbo cyangwa umuhanzi...',fm_foot:'charts za Deezer · kumenya indirimbo na AudD',fm_offline:'// charts ntiziboneka ubu',fl_tap:'Kanda umenye indirimbo',fl_tap_sub:'Curanga indirimbo hafi y’igikoresho cyawe, hanyuma ukande buto',fl_listening:'Ndumva…',fl_listen_sub:'Egereza igikoresho cyawe aho umuziki uri',fl_searching:'Ndimo gushakisha',fl_wait:'Tegereza gato',fl_cancel:'HAGARIKA',fl_again:'SHAKISHA INDI NDIRIMBO',fl_nomatch:'Nta ndirimbo ibonetse. Ongera ugerageze wegereye aho umuziki uri, mu gice cya chorus.',fl_short:'Byabaye bigufi cyane. Egereza igikoresho umuziki wongere ugerageze.',fl_nomic:'Mikoro yanzwe. Yemerere muri browser, cyangwa ushyiremo audio.',fl_norec:'Iyi browser ntishobora gufata amajwi. Gerageza gushyiramo audio.',fl_err:'Ihuzanya ryanze. Reba internet yawe wongere ugerageze.',sp_identified:'YABONETSE',sp_open:'Fungura kuri',sp_links:'Ahandi wayumvira',sp_share:'Sangiza',sp_copy:'Koporora link',sp_copied:'Link yakoporowe',sp_tab_match:'Aho yafatiwe',sp_tab_details:'Amakuru y’indirimbo',sp_matched:'Yafatiwe ku {a} muri {b}',sp_heard:'Iki ni cyo gice cy’indirimbo Frame yumvise ikakimenya.',sp_nomatch_info:'Yafunguwe uvuye mu gushakisha cyangwa muri charts — nta jwi ryafashwe.',sp_album:'Album',sp_released:'Yasohotse',sp_label:'Label',sp_genre:'Ubwoko',sp_length:'Uburebure',sp_bpm:'BPM',sp_video:'Amashusho',sp_watch:'REBA KURI YOUTUBE',sp_lyrics:'Amagambo',sp_lyrics_note:'Amagambo y’indirimbo arinzwe n’uburenganzira bw’abanditsi, bityo Frame ikohereza ku mbuga zifite uburenganzira bwo kuyerekana.',sp_from_album:'Kuri album imwe',sp_featured:'Iboneka muri',sp_top_by:'Indirimbo zikunzwe za',sp_similar:'Indirimbo zisa nayo',sp_artist:'Umuhanzi',sp_fans:'abafana',sp_albums:'albums',sp_credits:'Abayikoze',sp_main:'Umuhanzi mukuru',sp_feat:'Umuhanzi wafashije',sp_playlist:'PLAYLIST',sp_tracks:'indirimbo',sp_loading:'birimo kuza…',lyr_partial:'Iki ni igice cy’amagambo — fungura amagambo yose hano hasi.',lyr_none:'Amagambo y’iyi ndirimbo ntaraboneka.',hx_chat_t:'Chat yihariye',ho_l1a:'Ganira',ho_l1b:'mu ibanga.',ho_l2a:'Menya',ho_l2b:'indirimbo iyo ari yo yose.',ho_hint:'Kanda umenye indirimbo',ho_chat_sub:'Link imwe · siba byose',ho_resume_sub:'Chat yawe irafunguye — kanda ukomeze',ho_music_sub:'Charts · library · indirimbo',hx_morning:'Mwaramutse',hx_afternoon:'Mwiriwe',hx_evening:'Mwiriwe',hx_h1:'Ganira mu ibanga. Menya indirimbo iyo ari yo yose.',hx_tag:'App imwe, ubushobozi bubiri — chat zidasiga ikimenyetso, no kumenya indirimbo mu masegonda make.',hx_chat_sub:'1-kuri-1 · link imwe · siba byose',hx_b1:'Iyi chat koko ni ibanga?',hx_b2:'Ni twe twenyine. Nta kibikwa.',hx_b3:'Ifoto · irebwa rimwe',hx_b4:'Nidusoza, nkanda SOZA.',hx_p1:'Link y’ubutumire imwe',hx_p2:'Ifungirwa abantu babiri',hx_p3:'SOZA isiba byose ku bombi',hx_chat_cta:'TANGIZA CHAT',hx_resume:'KOMEZA CHAT',hx_waiting:'Utegereje umushyitsi',hx_with:'Uganira na {n}',hx_music_sub:'Umva · kanda · menya',hx_charts:'Charts ›',hx_music_cta:'MENYA INDIRIMBO',hx_last:'Iya nyuma',hx_f1:'Nta konti',hx_f1d:'Nta kwiyandikisha, nta email, nta nimero.',hx_f2:'Nta kibikwa',hx_f2d:'Chat ziba muri memory gusa, zigasibama iyo uzisoje.',hx_f3:'Indirimbo mu masegonda',hx_f3d:'Izina, umuhanzi, preview n’izisa nayo.',have_code:'Hari uwaguhaye code?',join_code:'Injira ukoresheje code',no_chats:'// nta chat urafungura — tangiza imwe cyangwa winjire ukoresheje code',m_tap:'Kanda umenye indirimbo',fm_sub_short:'Menya izina ry’indirimbo iyo ari yo yose, umuhanzi n’izisa nayo.',m_mymusic:'Umuziki wanjye',recently:'Izo uherutse kubona',see_all:'REBA ZOSE',nav_home:'Ahabanza',nav_library:'Library',lib:'Library',lib_songs:'indirimbo',lib_all:'Zose',lib_artists:'Abahanzi',play_all:'CURANGA ZOSE',stop_all:'HAGARIKA',last_find:'Iya nyuma wabonye',g_today:'Uyu munsi',g_yesterday:'Ejo',g_week:'Iki cyumweru',g_earlier:'Mbere',lib_empty:'Nta ndirimbo urabona. Kanda buto ya Frame ubone iya mbere.',remove:'Siba',settings:'Igenamiterere',set_stream:'FUNGURA INDIRIMBO KURI',set_prefs:'IBYO UKUNDA',set_auto:'Frame itangire yonyine',set_auto_d:'Itangire kumva ukimara gufungura Frame Music',set_haptic:'Kunyeganyega',set_haptic_d:'Telefoni inyeganyege iyo indirimbo ibonetse',set_lang:'Ururimi',set_clear:'Siba indirimbo nabonye',set_clear_c:'Gusiba indirimbo zose wabonye kuri iki gikoresho?',tab_song:'INDIRIMBO',tab_lyrics:'AMAGAMBO',tab_video:'VIDEO',tab_artist:'UMUHANZI',m_open:'FUNGURA',found_via:'Yabonetse na Frame',now_playing:'Iri gucurangwa',up_next:'Ikurikiyeho',search_music:'Shakisha indirimbo',recent_searches:'Ibyo uherutse gushakisha',clear:'Siba',search_hint_t:'Shakisha indirimbo iyo ari yo yose',search_hint:'Andika izina ry’indirimbo, umuhanzi cyangwa album.',searching:'Ndimo gushakisha…',search_fail:'Gushakisha byanze. Reba internet yawe wongere ugerageze.',search_none:'Nta byabonetse',search_none_d:'Reba uko wanditse cyangwa ugerageze indi ndirimbo cyangwa undi muhanzi.',top_result:'Igisubizo cya mbere',song:'Indirimbo ·',songs:'Indirimbo',artists_h:'Abahanzi',see_all_results:'Reba ibisubizo byose bya',
  sp_l1:'Murakaza neza kuri Frame.',sp_l2:'Ganira mu ibanga. Siba byose. Menya umuziki ukuzengurutse.',sp_t1:'IBANGA',sp_t2:'NTA KIMENYETSO',sp_t3:'UMUZIKI',sp_tap:'kanda ahantu hose winjire',welcome_anon:'MURAKAZA NEZA KURI FRAME',welcome_name:'MURAKAZA NEZA, ',nm_first_title:'HITAMO IZINA RYAWE',nm_first_q:'Iri ni ryo zina undi muntu azakubona ho muri chat. Nta konti, nta email — izina gusa.',nm_enter:'INJIRA MURI CHAT ›',nm_random:'izina ry’impfabusa'},
 fr:{st_wait:'ATTENTE',st_live:'LIVE',ring_wait:'ATTENTE',ring_live:'LIVE',sub_wait:'EN ATTENTE DE L’INVITÉ',sub_live:'CONNECTÉ · TÊTE-À-TÊTE',sub_away:'INVITÉ ABSENT',
  led_wait:'EN ATTENTE DE VOTRE INVITÉ...',led_live:'CONNECTÉ · RIEN N’EST SAUVEGARDÉ · FIN = TOUT EFFACER',led_away:'VOTRE INVITÉ S’EST ABSENTÉ... LE CHAT S’EFFACE APRÈS 10 MIN VIDE',
@@ -2199,9 +2455,9 @@ fr:{st_wait:'ATTENTE',st_live:'LIVE',ring_wait:'ATTENTE',ring_live:'LIVE',sub_wa
  end_confirm:'TERMINER ET SUPPRIMER ce chat pour VOUS DEUX ?\nTous les messages, photos et notes vocales seront effacés définitivement.',
  info_title:'QU’EST-CE QUE FRAME ?',info_lead:'Un salon privé pour exactement deux personnes, plus Frame Music. Partagez un lien unique, discutez, puis effacez tout — aucun historique, aucune trace.',
  feats:[['AUCUN COMPTE','Pas d’inscription, pas de connexion, pas d’e-mail, pas de numéro. Ouvrez Frame et parlez. Chaque chat est verrouillé à deux personnes.'],['GRATUIT','Gratuit tant que le chat est actif.'],['RIEN N’EST STOCKÉ','Les messages ne passent que par la mémoire du serveur. Rien n’est écrit en base de données ni sur disque.'],['FIN = TOUT EFFACER','L’un de vous touche FIN et tous les messages, photos, notes vocales et le code disparaissent pour les deux, immédiatement.'],['PHOTOS UNIQUES','Chaque photo s’ouvre une fois. Fermée, elle est détruite sur votre appareil et jamais gardée dans l’historique.'],['ANTI-COPIE','La copie et le clic droit sont bloqués sur le chat. Les captures d’écran restent possibles.'],['SALON ÉPHÉMÈRE','Un chat vide pendant 10 minutes se supprime, et tout chat meurt au bout de 24 heures maximum.'],['LIEN UNIQUE','Le lien d’invitation fonctionne une fois et expire après 10 minutes s’il n’est pas utilisé.'],['APPELS','Les appels audio et vidéo relient directement les deux navigateurs (pair-à-pair).'],['FRAME MUSIC','Une chanson ? Touchez et Frame vous donne son titre, l’artiste et des titres similaires.']],
- faq_h:'▸ QUESTIONS FRÉQUENTES',
+ faq_h:'QUESTIONS FRÉQUENTES',
  faqs:[['Frame est-il gratuit ?','Oui. Les chats privés et Frame Music sont gratuits.'],['Faut-il s’inscrire ou créer un compte ?','Non. Aucun compte, aucune connexion. Frame vous donne un nom aléatoire (modifiable) et une clé privée qui reste dans votre navigateur.'],['Les messages sont-ils privés et chiffrés ?','Les connexions utilisent HTTPS, les chats sont verrouillés à deux personnes et rien n’est sauvegardé. Les messages transitent par la mémoire du serveur pendant la discussion : ce n’est donc pas du chiffrement de bout en bout.'],['Combien de temps dure un chat ?','Jusqu’à ce que l’un de vous touche FIN, que le chat reste vide 10 minutes, ou que 24 heures passent.'],['Puis-je envoyer des photos et des notes vocales ?','Oui. Les photos sont à vue unique. Les notes vocales restent jusqu’à la fin du chat.'],['Et si je perds le lien ?','Touchez INVITER pour en créer un nouveau. L’ancien ne marche plus. Vous pouvez aussi partager le code secret.']],
- terms:'CONDITIONS',privacy:'CONFIDENTIALITÉ',fm_kicker:'MIS À JOUR CHAQUE JOUR',fm_h1:'Ce que le monde écoute en ce moment',fm_sub:'Une chanson vous plaît ? Touchez le bouton Frame et obtenez le titre, l’artiste et des titres similaires — en quelques secondes.',fm_cta:'IDENTIFIER UNE CHANSON',fm_upload:'ou importer un extrait',nav_identify:'Identifier',nav_charts:'Classements',nav_afro:'Afro Heat',nav_finds:'Mes trouvailles',sec_trending:'Tendances',sec_rank:'N°{n} du classement mondial cette semaine',top10:'Top 10 du jour',afro:'Afro Heat',artists:'Artistes en pleine ascension',finds:'Mes trouvailles',search_ph:'Rechercher une chanson ou un artiste...',fm_foot:'classements Deezer · reconnaissance AudD',fm_offline:'// classements indisponibles pour le moment',fl_tap:'Touchez pour identifier',fl_tap_sub:'Lancez une chanson près de votre appareil, puis touchez le bouton',fl_listening:'Écoute…',fl_listen_sub:'Rapprochez votre appareil de la musique',fl_searching:'Recherche en cours',fl_wait:'Veuillez patienter',fl_cancel:'ANNULER',fl_again:'IDENTIFIER UNE AUTRE CHANSON',fl_nomatch:'Aucun résultat. Réessayez plus près de l’enceinte, pendant le refrain.',fl_short:'Trop court. Rapprochez votre appareil de la musique et réessayez.',fl_nomic:'Accès au micro refusé. Autorisez-le dans le navigateur ou importez un extrait.',fl_norec:'Ce navigateur ne peut pas enregistrer. Importez un extrait.',fl_err:'Échec de connexion. Vérifiez internet et réessayez.',sp_identified:'IDENTIFIÉ',sp_open:'Ouvrir dans',sp_links:'Autres plateformes',sp_share:'Partager',sp_copy:'Copier le lien',sp_copied:'Lien copié',sp_tab_match:'Moment reconnu',sp_tab_details:'Détails',sp_matched:'Reconnu à {a} sur {b}',sp_heard:'C’est le passage de la chanson que Frame a entendu et reconnu.',sp_nomatch_info:'Ouvert depuis la recherche ou les classements — aucun enregistrement.',sp_album:'Album',sp_released:'Sortie',sp_label:'Label',sp_genre:'Genre',sp_length:'Durée',sp_bpm:'BPM',sp_video:'Clip vidéo',sp_watch:'VOIR SUR YOUTUBE',sp_lyrics:'Paroles',sp_lyrics_note:'Les paroles sont protégées par le droit d’auteur : Frame vous envoie vers des services autorisés à les afficher.',sp_from_album:'Sur le même album',sp_featured:'Présent dans',sp_top_by:'Titres populaires de',sp_similar:'Titres similaires',sp_artist:'Artiste',sp_fans:'fans',sp_albums:'albums',sp_credits:'Crédits',sp_main:'Artiste principal',sp_feat:'Artiste invité',sp_playlist:'PLAYLIST',sp_tracks:'titres',sp_loading:'chargement…',lyr_partial:'Aperçu des paroles — ouvrez les paroles complètes ci-dessous.',lyr_none:'Pas encore de paroles pour ce titre.',hx_chat_t:'Chat privé',ho_l1a:'Parlez',ho_l1b:'en privé.',ho_l2a:'Trouvez',ho_l2b:'n’importe quelle chanson.',ho_hint:'Touchez pour identifier une chanson',ho_chat_sub:'Lien unique · tout effacer',ho_resume_sub:'Votre chat est ouvert — touchez pour continuer',ho_music_sub:'Classements · bibliothèque · fiches titres',hx_morning:'Bonjour',hx_afternoon:'Bon après-midi',hx_evening:'Bonsoir',hx_h1:'Parlez en privé. Trouvez n’importe quelle chanson.',hx_tag:'Une app, deux pouvoirs — des chats sans trace et la reconnaissance musicale en quelques secondes.',hx_chat_sub:'tête-à-tête · lien unique · tout effacer',hx_b1:'Ce chat est vraiment privé ?',hx_b2:'Juste nous deux. Rien n’est sauvegardé.',hx_b3:'Photo · vue unique',hx_b4:'Quand on a fini, je touche FIN 🔥',hx_p1:'Lien d’invitation unique',hx_p2:'Verrouillé à deux',hx_p3:'FIN efface tout pour les deux',hx_chat_cta:'DÉMARRER UN CHAT',hx_resume:'REPRENDRE LE CHAT',hx_waiting:'En attente de l’invité',hx_with:'En chat avec {n}',hx_music_sub:'Écoutez · touchez · sachez',hx_charts:'Classements ›',hx_music_cta:'IDENTIFIER UNE CHANSON',hx_last:'Dernière',hx_f1:'Aucun compte',hx_f1d:'Pas d’inscription, pas d’e-mail, pas de numéro.',hx_f2:'Rien n’est stocké',hx_f2d:'Les chats vivent en mémoire et disparaissent à la fin.',hx_f3:'Chansons en secondes',hx_f3d:'Titre, artiste, extrait et titres similaires.',have_code:'Quelqu’un vous a donné un code ?',join_code:'Rejoindre avec un code',no_chats:'// aucun chat — lancez-en un ou rejoignez avec un code',m_tap:'Touchez pour identifier',fm_sub_short:'Trouvez le titre, l’artiste et des chansons similaires.',m_mymusic:'Ma musique',recently:'Trouvés récemment',see_all:'TOUT VOIR',nav_home:'Accueil',nav_library:'Bibliothèque',lib:'Bibliothèque',lib_songs:'titres',lib_all:'Tous',lib_artists:'Artistes',play_all:'TOUT LIRE',stop_all:'STOP',last_find:'Dernière trouvaille',g_today:'Aujourd’hui',g_yesterday:'Hier',g_week:'Cette semaine',g_earlier:'Plus tôt',lib_empty:'Aucune trouvaille. Touchez le bouton Frame pour trouver votre première chanson.',remove:'Supprimer',settings:'Réglages',set_stream:'OUVRIR LES TITRES DANS',set_prefs:'PRÉFÉRENCES',set_auto:'Frame au démarrage',set_auto_d:'Commencer l’écoute dès l’ouverture de Frame Music',set_haptic:'Retour haptique',set_haptic_d:'Vibrer quand une chanson est trouvée',set_lang:'Langue',set_clear:'Effacer mes trouvailles',set_clear_c:'Supprimer toutes vos trouvailles de cet appareil ?',tab_song:'TITRE',tab_lyrics:'PAROLES',tab_video:'VIDÉO',tab_artist:'ARTISTE',m_open:'OUVRIR',found_via:'Trouvé avec Frame',
+ terms:'CONDITIONS',privacy:'CONFIDENTIALITÉ',fm_kicker:'MIS À JOUR CHAQUE JOUR',fm_h1:'Ce que le monde écoute en ce moment',fm_sub:'Une chanson vous plaît ? Touchez le bouton Frame et obtenez le titre, l’artiste et des titres similaires — en quelques secondes.',fm_cta:'IDENTIFIER UNE CHANSON',fm_upload:'ou importer un extrait',nav_identify:'Identifier',nav_charts:'Classements',nav_afro:'Afro Heat',nav_finds:'Mes trouvailles',sec_trending:'Tendances',sec_rank:'N°{n} du classement mondial cette semaine',top10:'Top 10 du jour',afro:'Afro Heat',artists:'Artistes en pleine ascension',finds:'Mes trouvailles',search_ph:'Rechercher une chanson ou un artiste...',fm_foot:'classements Deezer · reconnaissance AudD',fm_offline:'// classements indisponibles pour le moment',fl_tap:'Touchez pour identifier',fl_tap_sub:'Lancez une chanson près de votre appareil, puis touchez le bouton',fl_listening:'Écoute…',fl_listen_sub:'Rapprochez votre appareil de la musique',fl_searching:'Recherche en cours',fl_wait:'Veuillez patienter',fl_cancel:'ANNULER',fl_again:'IDENTIFIER UNE AUTRE CHANSON',fl_nomatch:'Aucun résultat. Réessayez plus près de l’enceinte, pendant le refrain.',fl_short:'Trop court. Rapprochez votre appareil de la musique et réessayez.',fl_nomic:'Accès au micro refusé. Autorisez-le dans le navigateur ou importez un extrait.',fl_norec:'Ce navigateur ne peut pas enregistrer. Importez un extrait.',fl_err:'Échec de connexion. Vérifiez internet et réessayez.',sp_identified:'IDENTIFIÉ',sp_open:'Ouvrir dans',sp_links:'Autres plateformes',sp_share:'Partager',sp_copy:'Copier le lien',sp_copied:'Lien copié',sp_tab_match:'Moment reconnu',sp_tab_details:'Détails',sp_matched:'Reconnu à {a} sur {b}',sp_heard:'C’est le passage de la chanson que Frame a entendu et reconnu.',sp_nomatch_info:'Ouvert depuis la recherche ou les classements — aucun enregistrement.',sp_album:'Album',sp_released:'Sortie',sp_label:'Label',sp_genre:'Genre',sp_length:'Durée',sp_bpm:'BPM',sp_video:'Clip vidéo',sp_watch:'VOIR SUR YOUTUBE',sp_lyrics:'Paroles',sp_lyrics_note:'Les paroles sont protégées par le droit d’auteur : Frame vous envoie vers des services autorisés à les afficher.',sp_from_album:'Sur le même album',sp_featured:'Présent dans',sp_top_by:'Titres populaires de',sp_similar:'Titres similaires',sp_artist:'Artiste',sp_fans:'fans',sp_albums:'albums',sp_credits:'Crédits',sp_main:'Artiste principal',sp_feat:'Artiste invité',sp_playlist:'PLAYLIST',sp_tracks:'titres',sp_loading:'chargement…',lyr_partial:'Aperçu des paroles — ouvrez les paroles complètes ci-dessous.',lyr_none:'Pas encore de paroles pour ce titre.',hx_chat_t:'Chat privé',ho_l1a:'Parlez',ho_l1b:'en privé.',ho_l2a:'Trouvez',ho_l2b:'n’importe quelle chanson.',ho_hint:'Touchez pour identifier une chanson',ho_chat_sub:'Lien unique · tout effacer',ho_resume_sub:'Votre chat est ouvert — touchez pour continuer',ho_music_sub:'Classements · bibliothèque · fiches titres',hx_morning:'Bonjour',hx_afternoon:'Bon après-midi',hx_evening:'Bonsoir',hx_h1:'Parlez en privé. Trouvez n’importe quelle chanson.',hx_tag:'Une app, deux pouvoirs — des chats sans trace et la reconnaissance musicale en quelques secondes.',hx_chat_sub:'tête-à-tête · lien unique · tout effacer',hx_b1:'Ce chat est vraiment privé ?',hx_b2:'Juste nous deux. Rien n’est sauvegardé.',hx_b3:'Photo · vue unique',hx_b4:'Quand on a fini, je touche FIN.',hx_p1:'Lien d’invitation unique',hx_p2:'Verrouillé à deux',hx_p3:'FIN efface tout pour les deux',hx_chat_cta:'DÉMARRER UN CHAT',hx_resume:'REPRENDRE LE CHAT',hx_waiting:'En attente de l’invité',hx_with:'En chat avec {n}',hx_music_sub:'Écoutez · touchez · sachez',hx_charts:'Classements ›',hx_music_cta:'IDENTIFIER UNE CHANSON',hx_last:'Dernière',hx_f1:'Aucun compte',hx_f1d:'Pas d’inscription, pas d’e-mail, pas de numéro.',hx_f2:'Rien n’est stocké',hx_f2d:'Les chats vivent en mémoire et disparaissent à la fin.',hx_f3:'Chansons en secondes',hx_f3d:'Titre, artiste, extrait et titres similaires.',have_code:'Quelqu’un vous a donné un code ?',join_code:'Rejoindre avec un code',no_chats:'// aucun chat — lancez-en un ou rejoignez avec un code',m_tap:'Touchez pour identifier',fm_sub_short:'Trouvez le titre, l’artiste et des chansons similaires.',m_mymusic:'Ma musique',recently:'Trouvés récemment',see_all:'TOUT VOIR',nav_home:'Accueil',nav_library:'Bibliothèque',lib:'Bibliothèque',lib_songs:'titres',lib_all:'Tous',lib_artists:'Artistes',play_all:'TOUT LIRE',stop_all:'STOP',last_find:'Dernière trouvaille',g_today:'Aujourd’hui',g_yesterday:'Hier',g_week:'Cette semaine',g_earlier:'Plus tôt',lib_empty:'Aucune trouvaille. Touchez le bouton Frame pour trouver votre première chanson.',remove:'Supprimer',settings:'Réglages',set_stream:'OUVRIR LES TITRES DANS',set_prefs:'PRÉFÉRENCES',set_auto:'Frame au démarrage',set_auto_d:'Commencer l’écoute dès l’ouverture de Frame Music',set_haptic:'Retour haptique',set_haptic_d:'Vibrer quand une chanson est trouvée',set_lang:'Langue',set_clear:'Effacer mes trouvailles',set_clear_c:'Supprimer toutes vos trouvailles de cet appareil ?',tab_song:'TITRE',tab_lyrics:'PAROLES',tab_video:'VIDÉO',tab_artist:'ARTISTE',m_open:'OUVRIR',found_via:'Trouvé avec Frame',now_playing:'Lecture en cours',up_next:'À suivre',search_music:'Rechercher de la musique',recent_searches:'Recherches récentes',clear:'Effacer',search_hint_t:'Trouvez n’importe quel titre',search_hint:'Cherchez par titre, artiste ou album.',searching:'Recherche…',search_fail:'La recherche a échoué. Vérifiez votre connexion.',search_none:'Aucun résultat',search_none_d:'Vérifiez l’orthographe ou essayez un autre titre ou artiste.',top_result:'Meilleur résultat',song:'Titre ·',songs:'Titres',artists_h:'Artistes',see_all_results:'Voir tous les résultats pour',
  sp_l1:'Bienvenue sur Frame.',sp_l2:'Parlez en privé. Effacez tout. Découvrez la musique autour de vous.',sp_t1:'PRIVÉ',sp_t2:'AUCUNE TRACE',sp_t3:'MUSIQUE',sp_tap:'touchez n’importe où pour entrer',welcome_anon:'BIENVENUE SUR FRAME',welcome_name:'BON RETOUR, ',nm_first_title:'CHOISISSEZ VOTRE NOM',nm_first_q:'C’est ainsi que l’autre personne vous verra dans le chat. Pas de compte, pas d’e-mail — juste un nom.',nm_enter:'ENTRER DANS LE CHAT ›',nm_random:'nom aléatoire'}
 };
 let LANG=(()=>{try{const l=localStorage.getItem('fc_lang');if(l&&I18N[l])return l;}catch(e){}const n=(navigator.language||'en').slice(0,2);return I18N[n]?n:'en';})();
@@ -2232,10 +2488,10 @@ document.addEventListener('click',e=>{
 // ── WHAT IS FRAME? ──
 function renderInfo(){
   document.getElementById('info-body').innerHTML=`
-    <h3>▶ ${esc(t('info_title'))}</h3>
+    <h3>${ic('help')} ${esc(t('info_title'))}</h3>
     <div class="powered">POWERED BY FRAME</div>
     <p class="lead">${esc(t('info_lead'))}</p>
-    ${t('feats').map(([h,p])=>`<div class="feat"><i>▶</i><div><b>${esc(h)}</b><p>${esc(p)}</p></div></div>`).join('')}
+    ${t('feats').map(([h,p])=>`<div class="feat"><i>${ic('check')}</i><div><b>${esc(h)}</b><p>${esc(p)}</p></div></div>`).join('')}
     <div class="faq-h">${esc(t('faq_h'))}</div>
     ${t('faqs').map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}
     <div class="info-foot"><a href="/terms.html" target="_blank">${esc(t('terms'))}</a><a href="/privacy.html" target="_blank">${esc(t('privacy'))}</a></div>`;

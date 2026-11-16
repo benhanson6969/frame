@@ -1,3 +1,19 @@
+# Frame v16
+
+- **Search like a real music app**: on a computer there is a "Search for music" box in the top bar. Results appear as you type (songs with play buttons). Press Enter or "See all results" for the full search page: Top result, Songs (with PLAY ALL) and Artists. Recent searches are remembered on your device. On phones, the search button opens the same page.
+- **Non-stop music**: when a song ends, the next one in the list plays by itself. When the list ends, Frame keeps going with similar songs (radio), so the music does not stop. The bar shows what is up next.
+- **New Terms of Service and Privacy Policy pages**, redesigned and rewritten in plain language, with icons, a summary at the top and a table of contents.
+- Set `CONTACT_EMAIL` (in `.env` or on Render) to show your contact email on those pages.
+- Leftover symbols in the app (▶ ▸ ↗ 🔥) were replaced with proper icons. The emoji keyboard in the chat stays.
+- Includes everything from v15 (the player bar).
+
+# Frame v15
+
+- **Now-playing bar in Frame Music**: tap ▶ on any song and a bar slides in at the bottom with the cover, title and artist, a progress bar you can drag (00:06 / 00:30), ⏮ ⏯ ⏭, volume and ✕ to close.
+- ⏭ / ⏮ move through the list the song came from (Top 10, Afro Heat, similar songs…). PLAY ALL in the library uses the same bar.
+- Music keeps playing when you close a song page; it stops when you start listening for a song or go back to the hub.
+- On phones the bar sits just above the bottom navigation.
+
 # v14: named "Frame" everywhere, ready to go online
 
 - **The name is now "Frame" everywhere:** browser tab, Google title, share preview, call screen, structured data. The old Secret Chat / Frame Chat logo page and logo file are removed.

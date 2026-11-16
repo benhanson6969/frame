@@ -1,13 +1,85 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>TERMS OF SERVICE — Frame</title><meta name="robots" content="noindex"/>
-<style>body{background:#000;color:#00cc33;font-family:'Share Tech Mono',monospace,monospace;max-width:760px;margin:0 auto;padding:2rem 1.2rem;line-height:1.7;font-size:.92rem}h1{color:#00ff41;letter-spacing:.12em;text-shadow:0 0 10px #00ff4188}h2{color:#00ff41;font-size:1rem;margin-top:1.6rem}a{color:#00ff41}.note{border:1px dashed #ffb02e;color:#ffcf7a;padding:.7rem;border-radius:4px;font-size:.8rem}</style></head><body>
-<a href="/">← Frame</a><h1>&gt; TERMS OF SERVICE</h1>
-<p class="note">Template: review and adapt with a legal professional before relying on it. Last updated: 2026-11-16.</p>
-<h2>1. The service</h2><p>Frame offers private chats between two people, with no accounts or login, and Frame Music, a song-recognition tool. The service is provided free of charge, as is, without guarantees of availability.</p>
-<h2>2. No accounts</h2><p>Frame has no sign-up or login. Your browser keeps a random private key that identifies your chats. If you clear your browser data, you lose access to your open chats.</p>
-<h2>3. Acceptable use</h2><p>You must not use Frame to harass, threaten, exploit or harm anyone, to share illegal content, to send spam, or to try to break or overload the service.</p>
-<h2>4. Ephemeral chats</h2><p>Chats are deleted when either person ends them, after 10 minutes with nobody connected, after 24 hours, or when the server restarts. Deleted chats cannot be recovered. The other person can still take screenshots or photos of their screen.</p>
-<h2>5. Frame Music</h2><p>Song identification is provided by a third-party service (AudD) and similar-song suggestions by Deezer. Results may be wrong or unavailable.</p>
-<h2>6. Ending access</h2><p>We may block access for anyone who breaks these terms.</p>
-<h2>7. Contact</h2><p>Questions: add your contact email here.</p>
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Terms of Service — Frame</title>
+<meta name="description" content="The terms for using Frame: private 1-on-1 chats that disappear and Frame Music song recognition."/>
+<meta name="theme-color" content="#030703"/>
+<link rel="icon" href="/favicon.ico" sizes="any"/><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<style>*{box-sizing:border-box;margin:0;padding:0}
+:root{--g:#00ff41;--g2:#00c834;--bg:#030703;--card:#0a130b;--line:rgba(255,255,255,.08);--tx:#e7f5e8;--mut:#9db59f}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{background:var(--bg);color:var(--tx);font:16px/1.7 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(900px 500px at 85% -10%,rgba(0,255,65,.13),transparent 60%),radial-gradient(700px 400px at -10% 30%,rgba(0,255,65,.06),transparent 60%);z-index:-1}
+a{color:var(--g);text-decoration:none}a:hover{text-decoration:underline}
+.ic{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;vertical-align:-.13em}
+header{position:sticky;top:0;z-index:10;background:rgba(3,7,3,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.bar{max-width:1140px;margin:0 auto;display:flex;align-items:center;gap:1.5rem;padding:.85rem 1.4rem}
+.logo{display:flex;align-items:center;gap:.6rem;color:#fff;font-weight:800;letter-spacing:.16em;font-size:.95rem}.logo:hover{text-decoration:none}
+.logo i{width:34px;height:34px;border-radius:50%;border:2px solid var(--g);display:grid;place-items:center;color:var(--g);font:700 1rem 'Courier New',monospace;font-style:normal;box-shadow:0 0 14px rgba(0,255,65,.35)}
+.tabs{display:flex;gap:.3rem;margin-left:auto;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:30px;padding:.25rem}
+.tabs a{padding:.4rem 1rem;border-radius:24px;color:var(--mut);font-weight:600;font-size:.88rem}.tabs a:hover{text-decoration:none;color:#fff}
+.tabs a.on{background:var(--g);color:#002b0b}
+.open{display:inline-flex;align-items:center;gap:.45rem;padding:.55rem 1.1rem;border-radius:30px;background:#fff;color:#000;font-weight:700;font-size:.88rem}.open:hover{text-decoration:none;background:var(--g)}
+.hero{max-width:1140px;margin:0 auto;padding:4rem 1.4rem 2rem}
+.eyebrow{display:inline-flex;align-items:center;gap:.5rem;padding:.35rem .8rem;border-radius:20px;background:rgba(0,255,65,.1);border:1px solid rgba(0,255,65,.25);color:var(--g);font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+h1{font-size:clamp(2.4rem,6vw,4rem);line-height:1.05;letter-spacing:-.03em;font-weight:850;margin:1rem 0 .8rem}
+h1 span{color:var(--g)}
+.lead{max-width:680px;color:var(--mut);font-size:1.12rem}
+.meta{display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:1.2rem;color:var(--mut);font-size:.88rem}.meta span{display:inline-flex;align-items:center;gap:.4rem}
+.glance{max-width:1140px;margin:0 auto;padding:0 1.4rem;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.gc{background:linear-gradient(160deg,rgba(0,255,65,.07),rgba(255,255,255,.02));border:1px solid var(--line);border-radius:18px;padding:1.2rem}
+.gc .ib{width:44px;height:44px;border-radius:12px;background:rgba(0,255,65,.12);color:var(--g);display:grid;place-items:center;font-size:1.25rem;margin-bottom:.8rem}
+.gc b{display:block;font-size:1rem;margin-bottom:.2rem}.gc p{color:var(--mut);font-size:.88rem;line-height:1.5}
+.wrap{max-width:1140px;margin:0 auto;padding:3rem 1.4rem 4rem;display:grid;grid-template-columns:240px 1fr;gap:3rem;align-items:start}
+nav.toc{position:sticky;top:90px;display:flex;flex-direction:column;gap:.1rem;border-left:1px solid var(--line);padding-left:.2rem}
+.toc small{color:var(--mut);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:0 .9rem .5rem}
+.toc a{color:var(--mut);font-size:.9rem;padding:.38rem .9rem;border-left:2px solid transparent;margin-left:-.25rem}.toc a:hover{color:#fff;text-decoration:none}
+.toc a.on{color:var(--g);border-left-color:var(--g)}
+article{min-width:0}
+section{padding:1.6rem 0;border-bottom:1px solid var(--line)}section:first-child{padding-top:0}section:last-child{border-bottom:none}
+h2{display:flex;align-items:center;gap:.75rem;font-size:1.35rem;letter-spacing:-.01em;margin-bottom:.8rem}
+h2 .ib{width:38px;height:38px;border-radius:11px;background:rgba(0,255,65,.1);color:var(--g);display:grid;place-items:center;font-size:1.1rem}
+h2 em{font-style:normal;color:var(--mut);font-weight:600;font-size:.85rem;margin-right:-.3rem}
+section p{color:#cfe2d0;margin:.6rem 0}
+ul.ck{list-style:none;margin:.7rem 0;display:grid;gap:.55rem}
+ul.ck li{display:flex;gap:.7rem;color:#cfe2d0}ul.ck li .ic{color:var(--g);margin-top:.3rem}
+ul.ck.no li .ic{color:#ff6b6b}
+table{width:100%;border-collapse:collapse;margin:.9rem 0;font-size:.92rem;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:block}
+table thead,table tbody{display:table;width:100%}
+th,td{text-align:left;padding:.75rem 1rem;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:rgba(255,255,255,.04);color:var(--mut);font-size:.75rem;letter-spacing:.06em;text-transform:uppercase}
+tr:last-child td{border-bottom:none}td:first-child{font-weight:650;color:#fff;width:28%}
+.call{display:flex;gap:.8rem;padding:1rem 1.1rem;border-radius:14px;background:rgba(0,255,65,.06);border:1px solid rgba(0,255,65,.2);margin:1rem 0;color:#cfe2d0}
+.call .ic{color:var(--g);font-size:1.2rem;margin-top:.2rem}
+.call.warn{background:rgba(255,176,46,.07);border-color:rgba(255,176,46,.28)}.call.warn .ic{color:#ffb02e}
+code{font-family:ui-monospace,Menlo,monospace;font-size:.85em;background:rgba(255,255,255,.07);padding:.1rem .35rem;border-radius:5px}
+footer{border-top:1px solid var(--line);padding:2rem 1.4rem;text-align:center;color:var(--mut);font-size:.85rem}
+footer nav{display:flex;justify-content:center;gap:1.4rem;margin-bottom:.6rem}
+.top{position:fixed;right:1.2rem;bottom:1.2rem;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#0a130b;color:var(--g);display:grid;place-items:center;opacity:0;pointer-events:none;transition:opacity .2s}.top.show{opacity:1;pointer-events:auto}.top .ic{transform:rotate(90deg)}
+@media(max-width:900px){.glance{grid-template-columns:1fr 1fr}.wrap{grid-template-columns:1fr;gap:1rem}nav.toc{display:none}}
+@media(max-width:560px){.hero{padding-top:2.4rem}.glance{grid-template-columns:1fr;gap:.6rem}.gc{display:grid;grid-template-columns:44px 1fr;column-gap:.9rem;padding:1rem}.gc .ib{grid-row:span 2;margin:0}.bar{gap:.6rem;padding:.7rem 1rem}.logo b{display:none}.open span{display:none}.tabs a{padding:.4rem .75rem}td:first-child{width:36%}th,td{padding:.6rem .7rem}}
+@media print{header,nav.toc,.top{display:none}body{background:#fff;color:#000}.wrap{display:block}section p,ul.ck li{color:#000}}</style></head><body>
+<header><div class="bar">
+<a class="logo" href="/" aria-label="Frame home"><i>F</i><b>FRAME</b></a>
+<nav class="tabs"><a href="/terms.html" class="on">Terms</a><a href="/privacy.html" class="">Privacy</a></nav>
+<a class="open" href="/"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7M19 12H5"/></svg><span>Back to Frame</span></a>
+</div></header>
+<div class="hero">
+<span class="eyebrow"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> Legal</span>
+<h1>The rules, <span>kept simple.</span></h1>
+<p class="lead">By using Frame you agree to these terms. They are written to be read: what Frame offers, what you can expect, and what is not allowed.</p>
+<div class="meta"><span><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Last updated 16 November 2026</span><span><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> Applies to frame-atao.onrender.com</span></div>
+</div>
+<div class="glance"><div class="gc"><span class="ib"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></span><b>Private 1-on-1 chat</b><p>Two people, one link, erased together.</p></div><div class="gc"><span class="ib"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><b>Frame Music</b><p>Name a song in seconds.</p></div><div class="gc"><span class="ib"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/><path d="m3 3 18 18"/></svg></span><b>Free, no sign-up</b><p>No account needed to use anything.</p></div><div class="gc"><span class="ib"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></span><b>Be respectful</b><p>No harassment, abuse or illegal content.</p></div></div>
+<div class="wrap">
+<nav class="toc" aria-label="On this page"><small>On this page</small><a href="#service">The service</a><a href="#use">Using Frame</a><a href="#rules">What is not allowed</a><a href="#chats">Chats that disappear</a><a href="#music">Frame Music</a><a href="#content">Your content</a><a href="#availability">Availability</a><a href="#liability">Limits of responsibility</a><a href="#changes">Changes and contact</a></nav>
+<article><section id="service"><h2><span class="ib"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span><em>01</em> The service</h2><p>Frame offers <b>private chats between two people</b>, joined with a one-time link or code, and <b>Frame Music</b>, a tool that identifies songs and shows charts, previews and similar songs. Frame is free and needs no account.</p></section><section id="use"><h2><span class="ib"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><em>02</em> Using Frame</h2><p>You can use Frame if you are at least 13 years old, or older where your country requires it. Your browser keeps a private key that connects you to your chats. If you clear your browser data or change device, you lose access to chats that are still open.</p></section><section id="rules"><h2><span class="ib"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg></span><em>03</em> What is not allowed</h2><p>You must not use Frame to:</p><ul class="ck no"><li><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg><span>harass, threaten, bully or exploit anyone;</span></li><li><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg><span>share content that is illegal, sexually exploits anyone, or involves minors in any way;</span></li><li><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg><span>impersonate someone or deceive people to get money or information;</span></li><li><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg><span>send spam, malware or links to scams;</span></li><li><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg><span>try to break, overload, scrape or get around the limits of the service.</span></li></ul><p>We may block access, end chats or refuse service to anyone who breaks these rules.</p></section><section id="chats"><h2><span class="ib"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><em>04</em> Chats that disappear</h2><p>Chats are temporary by design. A chat is erased when either person ends it, after 10 minutes with nobody connected, after 24 hours, or when the server restarts. <b>Erased chats cannot be recovered</b>, by you or by us, so do not use Frame to keep anything you need later.</p><div class="call warn"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg><span>The other person can still take screenshots or photos of their screen. You are responsible for what you choose to send.</span></div></section><section id="music"><h2><span class="ib"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><em>05</em> Frame Music</h2><p>Song identification is provided by AudD, and charts, previews and song details by Deezer. Results can be wrong, incomplete or unavailable. Previews are short clips provided by Deezer for listening on Frame only. Song titles, artwork, lyrics and recordings belong to their owners.</p></section><section id="content"><h2><span class="ib"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></span><em>06</em> Your content</h2><p>What you send in a chat belongs to you. You only give Frame the permission it needs to deliver it to the other person while the chat exists. Frame does not read, review or keep your messages.</p></section><section id="availability"><h2><span class="ib"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="7" rx="2"/><rect x="2" y="14" width="20" height="7" rx="2"/><path d="M6 6.5h.01M6 17.5h.01"/></svg></span><em>07</em> Availability</h2><p>Frame is provided as it is, without promises that it will always be online, fast or free of errors. The free hosting may pause when nobody is using it, so the first visit can take a little longer to load. Features may change or be removed.</p></section><section id="liability"><h2><span class="ib"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 21h14M3 7h18"/><path d="m6 7-3 7a3 3 0 0 0 6 0zM18 7l-3 7a3 3 0 0 0 6 0z"/></svg></span><em>08</em> Limits of responsibility</h2><p>To the extent the law allows, Frame and its creator are not responsible for losses caused by using or not being able to use the service, by lost chats, or by what other people send you. Nothing in these terms limits rights you have under the law of your country that cannot be limited.</p></section><section id="changes"><h2><span class="ib"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></span><em>09</em> Changes and contact</h2><p>These terms may be updated. The date at the top will change, and continuing to use Frame means you accept the updated terms.</p><p><!--CONTACT--></p></section></article>
+</div>
+<footer><nav><a href="/">Frame</a><a href="/terms.html">Terms of Service</a><a href="/privacy.html">Privacy Policy</a></nav>© 2026 Frame. Private chat that disappears · Frame Music.</footer>
+<a class="top" href="#" aria-label="Back to top"><svg class="ic " viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7M19 12H5"/></svg></a>
+<script>
+const links=[...document.querySelectorAll('.toc a')],secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id));}})},{rootMargin:'-30% 0px -60% 0px'});
+secs.forEach(s=>s&&io.observe(s));
+const tb=document.querySelector('.top');addEventListener('scroll',()=>tb.classList.toggle('show',scrollY>600),{passive:true});
+</script>
 </body></html>

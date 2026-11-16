@@ -56,6 +56,21 @@ app.use((req, res, next) => {
   res.redirect(301, to + req.originalUrl);
 });
 app.get(['/', '/index.html'], (req, res) => { res.set('Cache-Control', 'no-cache'); res.type('html').send(renderIndex(req)); });
+// Terms & Privacy: fill in the contact email from CONTACT_EMAIL (.env / Render).
+const legalCache = {};
+app.get(['/terms.html', '/privacy.html'], (req, res) => {
+  const name = req.path.slice(1);
+  try {
+    if (!legalCache[name]) legalCache[name] = fsSeo.readFileSync(path.join(__dirname, 'public', name), 'utf8');
+    const mail = (process.env.CONTACT_EMAIL || '').trim();
+    const ok = /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(mail);
+    const line = ok
+      ? `Questions about these pages or a request about your data: write to <a href="mailto:${mail}">${mail}</a>.`
+      : 'Questions about these pages: contact details will be added here soon.';
+    res.type('html').send(legalCache[name].replace('<!--CONTACT-->', line));
+  } catch (e) { res.status(404).end(); }
+});
+
 app.get('/robots.txt', (req, res) => {
   res.type('text/plain').send(`User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${siteUrl(req)}/sitemap.xml\n`);
 });

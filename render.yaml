@@ -21,5 +21,7 @@ services:
         sync: false
       - key: ANALYTICS_KEY
         sync: false
+      - key: CONTACT_EMAIL
+        sync: false
       - key: REDIRECT_TO
         sync: false

@@ -165,7 +165,7 @@ app.post('/api/visitors/clear', requireAnalyticsKey, (req, res) => { visitors.le
 // headers don't matter.
 const AUDD_API_TOKEN = process.env.AUDD_API_TOKEN || '';
 console.log(AUDD_API_TOKEN ? '[Music] AudD token found ✓' : '[Music] AudD token MISSING — add AUDD_API_TOKEN to .env (see .env.example)');
-const MUSIC_LIMIT_PER_HOUR = Number(process.env.MUSIC_LIMIT_PER_HOUR) || 30;
+const MUSIC_LIMIT_PER_HOUR = Number(process.env.MUSIC_LIMIT_PER_HOUR) || 60;
 const musicHits = new Map(); // ip -> [timestamps] — keeps one person from burning the AudD quota
 
 function clientIp(req) {
@@ -212,20 +212,24 @@ app.post('/api/music/recognize', express.raw({ type: () => true, limit: '6mb' })
     if (AUDD_API_TOKEN) form.append('api_token', AUDD_API_TOKEN);
     form.append('return', 'deezer,spotify,apple_music');
     const type = req.headers['content-type'] || 'audio/webm';
-    form.append('file', new Blob([req.body], { type }), 'clip.' + (type.includes('mp4') ? 'm4a' : type.includes('mpeg') ? 'mp3' : type.includes('ogg') ? 'ogg' : 'webm'));
+    form.append('file', new Blob([req.body], { type }), 'clip.' + (type.includes('wav') ? 'wav' : type.includes('mp4') ? 'm4a' : type.includes('mpeg') ? 'mp3' : type.includes('ogg') ? 'ogg' : 'webm'));
 
     // Up to 2 tries, 20s each: a slow or flaky connection to AudD is the
     // most common cause of failures, and a second try usually works.
+    // Quick tries (sent while the microphone is still listening) get one short
+    // attempt; the final clip gets up to 2 attempts of 20 s.
+    const quick = req.headers['x-frame-quick'] === '1';
+    const tries = quick ? 1 : 2, waitMs = quick ? 12000 : 20000;
     let data = null, lastErr = null;
-    for (let attempt = 1; attempt <= 2 && !data; attempt++) {
+    for (let attempt = 1; attempt <= tries && !data; attempt++) {
       try {
-        const r = await fetch('https://api.audd.io/', { method: 'POST', body: form, signal: AbortSignal.timeout(20000) });
+        const r = await fetch('https://api.audd.io/', { method: 'POST', body: form, signal: AbortSignal.timeout(waitMs) });
         if (r.status === 413) return res.json({ ok: false, error: 'This audio file is too big. Use a 10–20 second clip.' });
         if (!r.ok) throw new Error('AudD HTTP ' + r.status);
         data = await r.json();
       } catch (e) {
         lastErr = e;
-        console.log(`[Music] AudD attempt ${attempt} failed:`, e.name === 'TimeoutError' ? 'timeout (20s)' : e.message);
+        console.log(`[Music] AudD attempt ${attempt} failed:`, e.name === 'TimeoutError' ? `timeout (${waitMs / 1000}s)` : e.message);
       }
     }
     if (!data) {
@@ -237,9 +241,18 @@ app.post('/api/music/recognize', express.raw({ type: () => true, limit: '6mb' })
       return res.json({ ok: false, error: msg });
     }
     if (data.status !== 'success') {
-      const msg = data.error?.error_message || 'Recognition service error.';
-      console.log('[Music] AudD error:', msg);
-      return res.json({ ok: false, error: AUDD_API_TOKEN ? msg : 'Music recognition is not set up yet (missing AUDD_API_TOKEN).' });
+      const code = Number(data.error?.error_code) || 0;
+      const raw = data.error?.error_message || 'Recognition service error.';
+      console.log('[Music] AudD error', code, raw);
+      // Show people a short, clear message instead of AudD's technical text.
+      let msg;
+      if (!AUDD_API_TOKEN) msg = 'Music recognition is not set up yet (missing AUDD_API_TOKEN).';
+      else if (code === 300 || code === 500 || code === 700 || /fingerprint|audio file|no file/i.test(raw))
+        msg = 'Frame couldn’t hear the song clearly. Move closer to the music (the chorus works best) and try again.';
+      else if (code === 900 || code === 901 || code === 902 || /token|limit/i.test(raw))
+        msg = 'Song recognition is unavailable right now (service limit reached). Please try again later.';
+      else msg = 'The recognition service had a problem. Please try again.';
+      return res.json({ ok: false, error: msg });
     }
     if (!data.result) return res.json({ ok: true, found: false });
 

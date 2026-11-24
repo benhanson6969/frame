@@ -1,3 +1,18 @@
+# Frame v16.2
+
+- **Faster song recognition**: Frame sends what it has heard after just a few seconds, while it keeps listening. If the song is found, the result opens right away (often in about 5 seconds instead of 11).
+- **Adapts to your internet**: on fast connections Frame tries twice early with a clear 16 kHz clip; on 3G it tries once with a lighter clip; on slow or data-saver connections it sends a small 8 kHz clip. If an upload takes too long, Frame switches to the light mode by itself.
+- **Live progress messages**: while listening and searching, short messages replace each other one by one ("Catching the beat…", "Reading the song's fingerprint…", "Searching millions of songs…", "Almost there…"), in English, Kinyarwanda and French.
+- The hourly limit per visitor is now 60 recognitions (early tries count too). Change it with `MUSIC_LIMIT_PER_HOUR`.
+
+# Frame v16.1
+
+- **More reliable song recognition**: every clip (recorded or uploaded) is turned into a clean 16 kHz WAV of at most 12 seconds before it is sent. This fixes AudD's "problem with creating an audio fingerprint" error.
+- Uploaded songs can now be up to 40 MB; Frame sends only 12 seconds from the middle of the song.
+- If the microphone heard only silence, Frame says so instead of sending the clip.
+- AudD's long technical error messages are replaced with short, clear ones.
+- Fixed the overlapping logo and buttons at the top of the "Tap to Frame" screen.
+
 # Frame v16
 
 - **Search like a real music app**: on a computer there is a "Search for music" box in the top bar. Results appear as you type (songs with play buttons). Press Enter or "See all results" for the full search page: Top result, Songs (with PLAY ALL) and Artists. Recent searches are remembered on your device. On phones, the search button opens the same page.

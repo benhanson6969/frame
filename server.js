@@ -283,25 +283,75 @@ app.post('/api/music/recognize', express.raw({ type: () => true, limit: '6mb' })
   }
 });
 
-// Charts for the Frame Music home page (Deezer, free, no key). Cached so
-// every visitor doesn't hit Deezer: 30 minutes is plenty for "trending".
-let chartsCache = { at: 0, data: null };
+// Charts for the Frame Music home page (Deezer, free, no key).
+// Deezer's /chart endpoints change slowly (the same songs stay on top for
+// weeks), so Frame mixes in Deezer's daily-updated "Top ..." chart playlists
+// and makes a fresh daily selection. Everyone sees the same picks on a given
+// day (Kigali time) and new picks the next day. Refreshed every 3 hours.
+const CHART_TZ_OFFSET_H = Number(process.env.CHART_TZ_OFFSET_H || 2);   // Kigali = UTC+2
+const dayKey = () => new Date(Date.now() + CHART_TZ_OFFSET_H * 3600e3).toISOString().slice(0, 10);
+function seededRandom(seed) {
+  let h = 2166136261;
+  for (const c of String(seed)) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
+  return () => { h += 0x6D2B79F5; let t = h; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+// Pick n songs from a ranked list: higher-ranked songs are more likely, but
+// the mix is different every day.
+function dailyPick(list, n, seed) {
+  const rnd = seededRandom(seed);
+  return list.map((x, i) => ({ x, k: Math.pow(rnd(), 1 / (1 + 3 / (1 + i / 6))) }))   // weighted random order
+    .sort((a, b) => b.k - a.k).slice(0, n).map(o => o.x);
+}
+function uniqTracks(list) {
+  const seen = new Set();
+  return list.filter(t => { const k = t && (t.id || (t.title + '|' + (t.artist?.name || ''))); if (!k || seen.has(k)) return false; seen.add(k); return true; });
+}
+const chartPlaylistIds = new Map();   // name -> { id, at }
+async function chartPlaylistTracks(name, limit) {
+  try {
+    let hit = chartPlaylistIds.get(name);
+    if (!hit || Date.now() - hit.at > 24 * 3600e3) {
+      const r = await deezer('/search/playlist?q=' + encodeURIComponent(name) + '&limit=15');
+      const list = r.data || [];
+      const exact = list.filter(p => String(p.title || '').trim().toLowerCase() === name.toLowerCase());
+      const pick = exact.find(p => /deezer/i.test(p.user?.name || '')) || exact[0];
+      if (!pick) return [];
+      hit = { id: pick.id, at: Date.now() };
+      chartPlaylistIds.set(name, hit);
+    }
+    const t = await deezer('/playlist/' + hit.id + '/tracks?limit=' + limit);
+    return t.data || [];
+  } catch (e) { return []; }
+}
+let chartsCache = { at: 0, day: '', data: null };
 app.get('/api/music/charts', async (req, res) => {
   try {
-    if (chartsCache.data && Date.now() - chartsCache.at < 30 * 60 * 1000) return res.json(chartsCache.data);
-    const [global, afro, artists] = await Promise.all([
-      deezer('/chart/0/tracks?limit=20'),
-      deezer('/chart/2/tracks?limit=15').catch(() => ({ data: [] })),   // genre 2 = African music
-      deezer('/chart/0/artists?limit=12').catch(() => ({ data: [] }))
+    const day = dayKey();
+    if (chartsCache.data && chartsCache.day === day && Date.now() - chartsCache.at < 3 * 3600e3) return res.json(chartsCache.data);
+    const [global, worldwide, afroChart, nigeria, kenya, southAfrica, artists] = await Promise.all([
+      deezer('/chart/0/tracks?limit=100').catch(() => ({ data: [] })),
+      chartPlaylistTracks('Top Worldwide', 100),
+      deezer('/chart/2/tracks?limit=50').catch(() => ({ data: [] })),   // genre 2 = African music
+      chartPlaylistTracks('Top Nigeria', 50),
+      chartPlaylistTracks('Top Kenya', 50),
+      chartPlaylistTracks('Top South Africa', 50),
+      deezer('/chart/0/artists?limit=40').catch(() => ({ data: [] }))
     ]);
+    // Real chart order for the Top list (daily-updated playlist when found).
+    const top = uniqTracks([...worldwide, ...(global.data || [])]).filter(t => t.preview || t.title);
+    if (!top.length) throw new Error('no chart data');
+    // Afro: mix the African charts, then a daily selection.
+    const afroPool = uniqTracks([...(afroChart.data || []), ...nigeria, ...kenya, ...southAfrica]);
     const data = {
       ok: true,
+      day,
       updatedAt: Date.now(),
-      trending: (global.data || []).map(slimTrack),
-      afro: (afro.data || []).map(slimTrack),
-      artists: (artists.data || []).map(a => ({ id: a.id, name: a.name, picture: a.picture_medium || a.picture || '', link: a.link || '' }))
+      trending: top.slice(0, 20).map(slimTrack),
+      today: dailyPick(top.slice(0, 60), 10, 'today:' + day).map(slimTrack),
+      afro: dailyPick(afroPool.slice(0, 80), 15, 'afro:' + day).map(slimTrack),
+      artists: dailyPick(artists.data || [], 12, 'artists:' + day).map(a => ({ id: a.id, name: a.name, picture: a.picture_medium || a.picture || '', link: a.link || '' }))
     };
-    chartsCache = { at: Date.now(), data };
+    chartsCache = { at: Date.now(), day, data };
     res.json(data);
   } catch (e) {
     console.log('[Music] Charts error:', e.message);

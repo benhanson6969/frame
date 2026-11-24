@@ -1,3 +1,11 @@
+# Frame v16.3
+
+- **Charts that change every day**: Deezer's basic chart keeps the same songs on top for weeks, so Frame now also reads Deezer's daily "Top Worldwide" chart playlist and the African charts (Top Nigeria, Top Kenya, Top South Africa, plus African music).
+- **Today's picks**: the big carousel, the trending tiles on the home screen, Afro Heat and the artists row get a fresh daily selection (higher-ranked songs come up more often). Everyone sees the same picks on the same day; new picks each day at midnight Kigali time.
+- The Top 10 list keeps the real chart order.
+- The heading shows today's date ("UPDATED DAILY · 24 Nov"). Charts refresh every 3 hours.
+- Optional: `CHART_TZ_OFFSET_H` (default 2 = Kigali) sets when the new day starts.
+
 # Frame v16.2
 
 - **Faster song recognition**: Frame sends what it has heard after just a few seconds, while it keeps listening. If the song is found, the result opens right away (often in about 5 seconds instead of 11).

@@ -1754,7 +1754,7 @@ async function loadHubTrending(){
     if(!d.ok)throw 0;
     if(!fmData){fmData=d;}
     hubTrendDone=true;
-    document.getElementById('hx-trend').innerHTML=d.trending.slice(0,10).map((tr,i)=>`<div class="ho-tile" onclick="openMusic();setTimeout(()=>openTrack(fmData.trending[${i}]),300)"><span class="cv" style="background-image:url('${esc(tr.coverBig||tr.cover)}')"></span><b>${esc(tr.title)}</b><span>${esc(tr.artist)}</span></div>`).join('');
+    const hxList=(d.today&&d.today.length?d.today:d.trending);document.getElementById('hx-trend').innerHTML=hxList.slice(0,10).map((tr,i)=>`<div class="ho-tile" onclick="openMusic();setTimeout(()=>openTrack((fmData.today&&fmData.today.length?fmData.today:fmData.trending)[${i}]),300)"><span class="cv" style="background-image:url('${esc(tr.coverBig||tr.cover)}')"></span><b>${esc(tr.title)}</b><span>${esc(tr.artist)}</span></div>`).join('');
   }catch(e){document.querySelector('.ho-strip').style.display='none';}
 }
 function goHub(){stopListen(true);if(typeof playerClose==='function')playerClose();showScreen('hub');startHub();}
@@ -1779,7 +1779,8 @@ async function loadCharts(){
     const d=fmData||await (await fetch('/api/music/charts')).json();
     if(!d.ok)throw new Error(d.error);
     fmData=d;fmLoaded=true;
-    fmSlides=d.trending.slice(0,7);
+    fmSlides=(d.today&&d.today.length?d.today:d.trending).slice(0,7);
+    const kk=document.querySelector('.fm-kicker');if(kk&&d.day){try{kk.textContent=t('fm_kicker')+' · '+new Date(d.day+'T12:00:00').toLocaleDateString(LANG==='rw'?'en-GB':LANG,{day:'numeric',month:'short'});}catch(e){}}
     renderCarousel();renderTop10();renderRows();
   }catch(e){
     document.getElementById('fm-stage').innerHTML=`<div class="fm-loading">${esc(t('fm_offline'))}</div>`;

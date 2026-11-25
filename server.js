@@ -25,7 +25,34 @@ const crypto = require('crypto');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: '*' }, maxHttpBufferSize: 5e6 });
+const io = new Server(server, { cors: { origin: '*' }, maxHttpBufferSize: 8e6, pingInterval: 20000, pingTimeout: 25000 });
+
+// ── Web Push (call alerts when Frame is closed or in the background) ──
+// Keys come from VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY. If they are missing,
+// temporary keys are made at start-up (alerts still work, but phones must
+// re-subscribe after each restart — save the printed keys on Render).
+const webpush = require('web-push');
+let VAPID_PUBLIC = (process.env.VAPID_PUBLIC_KEY || '').trim();
+let VAPID_PRIVATE = (process.env.VAPID_PRIVATE_KEY || '').trim();
+if (!VAPID_PUBLIC || !VAPID_PRIVATE) {
+  const k = webpush.generateVAPIDKeys();
+  VAPID_PUBLIC = k.publicKey; VAPID_PRIVATE = k.privateKey;
+  console.log('[Push] No VAPID keys set — using temporary keys. To keep call alerts working after restarts, add these on Render:');
+  console.log('[Push]   VAPID_PUBLIC_KEY=' + VAPID_PUBLIC);
+  console.log('[Push]   VAPID_PRIVATE_KEY=' + VAPID_PRIVATE);
+} else console.log('[Push] VAPID keys found ✓');
+try { webpush.setVapidDetails('mailto:' + ((process.env.CONTACT_EMAIL || '').trim() || 'frame@example.com'), VAPID_PUBLIC, VAPID_PRIVATE); }
+catch (e) { console.log('[Push] Bad VAPID keys:', e.message); }
+const pushSubs = {};   // uid -> Map(endpoint -> subscription), memory only
+function sendPush(uid, payload) {
+  const subs = pushSubs[uid]; if (!subs || !subs.size) return;
+  const body = JSON.stringify(payload);
+  for (const [ep, sub] of subs) {
+    webpush.sendNotification(sub, body, { TTL: 30, urgency: 'high', topic: String(payload.tag || 'frame').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 32) })
+      .catch(err => { if (err.statusCode === 404 || err.statusCode === 410) subs.delete(ep); });
+  }
+}
+const CALL_RING_MS = Math.max(5, Number(process.env.CALL_RING_SECONDS) || 10) * 1000;
 
 app.use(express.json());
 // ── SEO / Google ──
@@ -70,6 +97,8 @@ app.get(['/terms.html', '/privacy.html'], (req, res) => {
     res.type('html').send(legalCache[name].replace('<!--CONTACT-->', line));
   } catch (e) { res.status(404).end(); }
 });
+
+app.get('/api/push/key', (req, res) => res.json({ key: VAPID_PUBLIC }));
 
 app.get('/robots.txt', (req, res) => {
   res.type('text/plain').send(`User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${siteUrl(req)}/sitemap.xml\n`);
@@ -571,6 +600,7 @@ function destroyRoom(code, reason) {
   targets.forEach(sid => io.to(sid).emit('room:deleted', { code, reason }));
   io.in(code).socketsLeave(code);
   if (r.invite) delete invites[r.invite];
+  if (r.call) clearTimeout(r.call.timer);
   r.messages.length = 0;
   delete rooms[code];
   console.log(`[Room] ${code} deleted (${reason})`);
@@ -605,6 +635,7 @@ io.on('connection', (socket) => {
       (userSockets[me.uid] ||= new Set()).add(socket.id);
       const mine = Object.values(rooms).filter(r => r.creatorUid === me.uid || r.peerUid === me.uid);
       cb?.({ ok: true, uid: me.uid, rooms: mine.map(r => roomSummary(r, me.uid)) });
+      mine.forEach(r => { if (r.call && r.call.state === 'ringing' && r.call.toUid === me.uid) socket.emit('call:incoming', callInfo(r)); });
     } catch (e) { cb?.({ ok: false, error: e.message }); }
   });
 
@@ -711,24 +742,78 @@ io.on('connection', (socket) => {
     const r = inRoom(); if (!r) return false;
     const full = { id: `${Date.now()}_${Math.random().toString(36).slice(2)}`, from: socket.data.uid, username: socket.data.username, ts: Date.now(), ...msg };
     // Photos are view-once: delivered live, never kept in the history.
-    r.messages.push(full.type === 'photo' ? { ...full, dataUrl: null, gone: true } : full);
+    r.messages.push(full.type === 'photo' ? { ...full, dataUrl: null, buf: null, gone: true } : full);
     if (r.messages.length > 300) r.messages.shift();
-    io.to(r.code).emit('chat:message', full);
+    // The other person gets the full message; the sender only gets a light
+    // confirmation (no need to download their own photo / voice note again).
+    socket.to(r.code).emit('chat:message', full);
+    socket.emit('chat:message', (full.buf || full.dataUrl) ? { ...full, buf: null, dataUrl: null, mine: true } : full);
     const other = r.creatorUid === socket.data.uid ? r.peerUid : r.creatorUid;
     if (other) emitToUser(other, 'notification:new', { code: r.code, text: `${socket.data.username}: ${msg.text ? msg.text.slice(0, 40) : msg.type === 'voice' ? '[voice]' : '[photo]'}` });
     return true;
   }
-  socket.on('chat:message', ({ text } = {}, cb) => {
+  const cid = v => String(v || '').slice(0, 40);
+  const isBin = b => Buffer.isBuffer(b) || b instanceof ArrayBuffer || ArrayBuffer.isView(b);
+  const toBuf = b => Buffer.isBuffer(b) ? b : Buffer.from(b instanceof ArrayBuffer ? b : b.buffer);
+  const safeMime = (m, kind) => (new RegExp('^' + kind + '/[a-z0-9.+-]+(;[ a-z0-9=.,-]*)?$', 'i').test(String(m || '')) ? String(m) : kind + (kind === 'image' ? '/jpeg' : '/webm'));
+  socket.on('chat:message', ({ text, cid: c } = {}, cb) => {
     if (!text?.trim()) return cb?.({ ok: false });
-    const ok = post({ type: 'text', text: text.trim().slice(0, 2000) }); cb?.({ ok });
+    const ok = post({ type: 'text', text: text.trim().slice(0, 2000), cid: cid(c) }); cb?.({ ok });
   });
-  socket.on('chat:photo', ({ dataUrl } = {}, cb) => {
+  // Photos / voice notes arrive as binary (fast) or, from older pages, as a data URL.
+  socket.on('chat:photo', ({ dataUrl, buf, mime, cid: c } = {}, cb) => {
+    if (buf && isBin(buf)) { const b = toBuf(buf); if (b.length > 7e6) return cb?.({ ok: false }); return cb?.({ ok: post({ type: 'photo', buf: b, mime: safeMime(mime, 'image'), cid: cid(c) }) }); }
     if (!dataUrl || !String(dataUrl).startsWith('data:image/')) return cb?.({ ok: false });
-    const ok = post({ type: 'photo', dataUrl }); cb?.({ ok });
+    const ok = post({ type: 'photo', dataUrl, cid: cid(c) }); cb?.({ ok });
   });
-  socket.on('chat:voice', ({ dataUrl, duration } = {}, cb) => {
+  socket.on('chat:voice', ({ dataUrl, buf, mime, duration, cid: c } = {}, cb) => {
+    const d = Number(duration) || 0;
+    if (buf && isBin(buf)) { const b = toBuf(buf); if (b.length > 5e6) return cb?.({ ok: false }); return cb?.({ ok: post({ type: 'voice', buf: b, mime: safeMime(mime, 'audio'), duration: d, cid: cid(c) }) }); }
     if (!dataUrl || !String(dataUrl).startsWith('data:audio/')) return cb?.({ ok: false });
-    const ok = post({ type: 'voice', dataUrl, duration: Number(duration) || 0 }); cb?.({ ok });
+    const ok = post({ type: 'voice', dataUrl, duration: d, cid: cid(c) }); cb?.({ ok });
+  });
+
+  // ── Push subscriptions (call alerts) ──
+  socket.on('push:subscribe', ({ sub } = {}, cb) => {
+    const uid = socket.data?.uid;
+    if (!uid || !sub || typeof sub.endpoint !== 'string' || !/^https:\/\//.test(sub.endpoint) || !sub.keys?.p256dh || !sub.keys?.auth) return cb?.({ ok: false });
+    const m = (pushSubs[uid] ||= new Map());
+    m.set(sub.endpoint, { endpoint: sub.endpoint, keys: { p256dh: String(sub.keys.p256dh), auth: String(sub.keys.auth) } });
+    while (m.size > 5) m.delete(m.keys().next().value);
+    cb?.({ ok: true });
+  });
+  socket.on('push:unsubscribe', ({ endpoint } = {}) => { pushSubs[socket.data?.uid]?.delete(String(endpoint || '')); });
+
+  // ── Calls: ring the other person, give up after CALL_RING_MS ──
+  socket.on('call:start', ({ video = false } = {}, cb) => {
+    const r = inRoom(); if (!r) return cb?.({ ok: false, error: 'Open the chat first.' });
+    const me = socket.data.uid, other = r.creatorUid === me ? r.peerUid : r.creatorUid;
+    if (!other) return cb?.({ ok: false, error: 'Nobody has joined this chat yet.' });
+    if (r.call && r.call.state === 'ringing') return cb?.({ ok: false, error: 'A call is already ringing.' });
+    if (r.call) clearTimeout(r.call.timer);
+    r.call = { id: crypto.randomBytes(6).toString('hex'), fromSid: socket.id, fromUid: me, fromName: socket.data.username, toUid: other, video: !!video, state: 'ringing', at: Date.now() };
+    r.call.timer = setTimeout(() => endRinging(r, 'missed'), CALL_RING_MS);
+    const info = callInfo(r);
+    emitToUser(other, 'call:incoming', info);
+    sendPush(other, { type: 'call', tag: 'call-' + r.code, ...info });
+    cb?.({ ok: true, callId: r.call.id, ringMs: CALL_RING_MS });
+  });
+  socket.on('call:accept', ({ code, callId } = {}, cb) => {
+    const r = rooms[String(code || '').toUpperCase()];
+    if (!r || !r.call || r.call.id !== callId || r.call.state !== 'ringing' || r.call.toUid !== socket.data?.uid) return cb?.({ ok: false, error: 'This call has ended.' });
+    clearTimeout(r.call.timer); r.call.state = 'active';
+    io.to(r.call.fromSid).emit('call:accepted', { callId });
+    for (const sid of userSockets[r.call.toUid] || []) if (sid !== socket.id) io.to(sid).emit('call:stop-ring', { code: r.code, callId });
+    cb?.({ ok: true, video: r.call.video });
+  });
+  socket.on('call:decline', ({ code, callId } = {}) => {
+    const r = rooms[String(code || '').toUpperCase()];
+    if (!r || !r.call || r.call.id !== callId || r.call.state !== 'ringing' || r.call.toUid !== socket.data?.uid) return;
+    endRinging(r, 'declined');
+  });
+  socket.on('call:cancel', () => {
+    const r = inRoom();
+    if (r && r.call && r.call.state === 'ringing' && r.call.fromSid === socket.id) endRinging(r, 'cancelled');
   });
 
   // Voice/Video WebRTC (2 people)
@@ -754,10 +839,33 @@ io.on('connection', (socket) => {
   });
 });
 
+function callInfo(r) {
+  return { code: r.code, callId: r.call.id, from: r.call.fromName, video: r.call.video, ringMs: Math.max(0, CALL_RING_MS - (Date.now() - r.call.at)) };
+}
+function roomSystem(r, text) {
+  const m = { id: `${Date.now()}_${Math.random().toString(36).slice(2)}`, type: 'system', text, ts: Date.now() };
+  r.messages.push(m); if (r.messages.length > 300) r.messages.shift();
+  io.to(r.code).emit('chat:message', m);
+}
+// A ringing call ends without being answered: missed, declined or cancelled.
+function endRinging(r, how) {
+  const c = r.call; if (!c || c.state !== 'ringing') return;
+  clearTimeout(c.timer); c.state = 'ended'; r.call = null;
+  const calleeName = (r.creatorUid === c.toUid ? r.creatorName : r.peerName) || 'Your friend';
+  const kind = c.video ? 'video' : 'voice';
+  io.to(c.fromSid).emit(how === 'declined' ? 'call:declined' : 'call:no-answer', { name: calleeName, how });
+  emitToUser(c.toUid, 'call:missed', { code: r.code, callId: c.id, from: c.fromName, video: c.video, how });
+  if (how !== 'declined') sendPush(c.toUid, { type: 'missed', tag: 'call-' + r.code, code: r.code, from: c.fromName, video: c.video });
+  roomSystem(r, how === 'declined' ? `${calleeName} declined the ${kind} call` : `Missed ${kind} call from ${c.fromName}`);
+  const s = io.sockets.sockets.get(c.fromSid);
+  if (s && how !== 'cancelled') leaveVoice(s);
+}
 function leaveVoice(sock) {
   const r = rooms[sock.data?.code];
   if (!r || !r.voiceUsers.has(sock.id)) return;
+  if (r.call && r.call.state === 'ringing' && r.call.fromSid === sock.id) endRinging(r, 'cancelled');
   r.voiceUsers.delete(sock.id);
+  if (!r.voiceUsers.size && r.call) { clearTimeout(r.call.timer); r.call = null; }
   io.to(r.code).emit('voice:peer-left', { fromId: sock.id });
   broadcastVoiceUsers(r.code);
 }

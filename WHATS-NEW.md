@@ -1,3 +1,18 @@
+# Frame v17
+
+- **Real incoming calls**: when your friend calls (voice or video), you get a full-screen incoming call with a ringtone and vibration, even if you are on the home screen or in Frame Music. Before, the other person was not told at all.
+- **Call alerts on PC and phone**: tap the green "Call alerts" bell in the chat to allow notifications. Then a call shows a system notification ("Ben is calling you", with Answer) when Frame is in the background or closed (Chrome, Edge, Firefox, Android; on iPhone after adding Frame to the Home Screen).
+- **10-second ring**: if nobody answers within 10 seconds, the caller sees "No answer — the call was missed", the other person gets a "Missed call" alert, and both chats show "Missed voice call from …". Declining shows "Call declined". When one person hangs up, the call ends for both.
+- The caller hears a ringback tone and sees "Calling… / Ringing… / Connecting…".
+- **Faster messages**: your message appears instantly with "sending…", then a tick when delivered. Photos are shrunk (max 1600 px) before sending; photos and voice notes travel as binary (smaller and quicker). The connection uses WebSocket straight away.
+- Privacy Policy updated (call alerts).
+- New settings: `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` (copy them from the logs), `CALL_RING_SECONDS` (default 10).
+
+# Frame v16.4
+
+- Google site name: the WebSite data now offers "Frame Chat" and the site address as backup names, so Google can show "Frame" instead of "Render" above the result.
+- Fixed glued words in Google's snippet ("FREELYText" → "FREELY Text").
+
 # Frame v16.3
 
 - **Charts that change every day**: Deezer's basic chart keeps the same songs on top for weeks, so Frame now also reads Deezer's daily "Top Worldwide" chart playlist and the African charts (Top Nigeria, Top Kenya, Top South Africa, plus African music).

@@ -1,3 +1,13 @@
+# Frame v18
+
+- **Full songs inside Frame** (design K, "ambient cover color"): on a song page, tap **Full song**. The whole song plays inside Frame with YouTube's official player (privacy-enhanced mode). You never leave Frame.
+- The background takes the main colour of the song's cover, so every song looks different.
+- Big title, progress bar you can drag, previous / play-pause / next, and "Up next". When a song ends, the next one plays by itself; after the similar songs, Frame keeps going with more songs like the last one.
+- Frame picks the official video or "Topic" audio and skips covers, remixes, karaoke and reactions. Each song is looked up only once a week (saves the free YouTube quota).
+- If a song can't be found (or the key isn't set yet), Frame says so and offers "Open on YouTube".
+- The 30-second previews and the bottom player work as before.
+- New setting: `YOUTUBE_API_KEY`. Privacy Policy updated (YouTube).
+
 # Frame v17
 
 - **Real incoming calls**: when your friend calls (voice or video), you get a full-screen incoming call with a ringtone and vibration, even if you are on the home screen or in Frame Music. Before, the other person was not told at all.

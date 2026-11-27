@@ -98,6 +98,22 @@ app.get(['/terms.html', '/privacy.html'], (req, res) => {
   } catch (e) { res.status(404).end(); }
 });
 
+// Cover images from Deezer's CDN, served from our own address so the page can
+// read their colours (for the full-song player background).
+app.get('/api/img', async (req, res) => {
+  let u;
+  try { u = new URL(String(req.query.u || '')); } catch (e) { return res.status(400).end(); }
+  if (u.protocol !== 'https:' || !/(^|\.)dzcdn\.net$/.test(u.hostname)) return res.status(400).end();
+  try {
+    const r = await fetch(u, { signal: AbortSignal.timeout(8000) });
+    const type = r.headers.get('content-type') || '';
+    if (!r.ok || !type.startsWith('image/')) return res.status(502).end();
+    const buf = Buffer.from(await r.arrayBuffer());
+    if (buf.length > 3e6) return res.status(413).end();
+    res.set({ 'Content-Type': type, 'Cache-Control': 'public, max-age=86400' }).send(buf);
+  } catch (e) { res.status(502).end(); }
+});
+
 app.get('/api/push/key', (req, res) => res.json({ key: VAPID_PUBLIC }));
 
 app.get('/robots.txt', (req, res) => {
@@ -466,7 +482,64 @@ app.get('/api/music/track', async (req, res) => {
 // their copyright line and loading their tracking pixel — the page does both.
 const MUSIXMATCH_API_KEY = process.env.MUSIXMATCH_API_KEY || '';
 console.log(MUSIXMATCH_API_KEY ? '[Lyrics] Musixmatch key found ✓' : '[Lyrics] No MUSIXMATCH_API_KEY — lyrics will show links instead');
+console.log((process.env.YOUTUBE_API_KEY || '').trim() ? '[YouTube] API key found ✓ (full songs inside Frame)' : '[YouTube] No YOUTUBE_API_KEY — the full-song button will open a YouTube search instead');
 const lyricsCache = new Map();
+// ── Full song inside Frame (official YouTube player, only when the person asks) ──
+// Finds the best YouTube video for a song with the YouTube Data API
+// (YOUTUBE_API_KEY, free quota ≈100 searches a day). Results are remembered
+// for a week, so each song is searched only once.
+const YT_KEY = () => (process.env.YOUTUBE_API_KEY || '').trim();
+const ytCache = new Map();            // "artist|title" -> { at, data }
+const ytHits = new Map();             // ip -> [timestamps]
+const ytNorm = v => String(v || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/\(.*?\)|\[.*?\]/g, ' ').replace(/[^a-z0-9]+/g, ' ').trim();
+function ytScore(item, artist, title) {
+  const vt = ytNorm(item.snippet?.title), ch = ytNorm(item.snippet?.channelTitle), a = ytNorm(artist), t = ytNorm(title);
+  const raw = String(item.snippet?.title || '').toLowerCase(), rawT = String(title || '').toLowerCase();   // keep (brackets) for the checks below
+  let s = 0;
+  if (t && vt.includes(t)) s += 5;
+  if (a && (vt.includes(a) || ch.includes(a))) s += 4;
+  if (/ topic$/.test(ch)) s += 3;                       // official "Artist - Topic" audio
+  if (/official/.test(raw)) s += 2;
+  if (/vevo/.test(ch)) s += 2;
+  if (/lyric/.test(raw)) s += 0.5;
+  if (/(cover|karaoke|remix|reaction|slowed|sped up|8d|instrumental|live at|tutorial|nightcore)/.test(raw) && !/(cover|remix|live|instrumental)/.test(rawT)) s -= 6;
+  return s;
+}
+app.get('/api/music/fullsong', async (req, res) => {
+  const title = String(req.query.title || '').slice(0, 150).trim(), artist = String(req.query.artist || '').slice(0, 120).trim();
+  if (!title) return res.json({ ok: false, error: 'Missing song title.' });
+  const key = ytNorm(artist) + '|' + ytNorm(title);
+  const c = ytCache.get(key);
+  if (c && Date.now() - c.at < (c.data.ok ? 7 * 864e5 : 6 * 3600e3)) return res.json(c.data);
+  const search = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(artist + ' ' + title);
+  if (!YT_KEY()) return res.json({ ok: false, reason: 'nokey', search });
+  const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+  const hits = (ytHits.get(ip) || []).filter(t => t > Date.now() - 3600e3);
+  if (hits.length >= 30) return res.json({ ok: false, reason: 'limit', search });
+  hits.push(Date.now()); ytHits.set(ip, hits);
+  try {
+    const u = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoEmbeddable=true&maxResults=8&safeSearch=moderate'
+      + '&q=' + encodeURIComponent(`${artist} ${title}`.trim()) + '&key=' + encodeURIComponent(YT_KEY());
+    const r = await fetch(u, { signal: AbortSignal.timeout(10000) });
+    const d = await r.json();
+    if (d.error) {
+      console.log('[YouTube] API error:', d.error.code, d.error.message);
+      const data = { ok: false, reason: d.error.code === 403 ? 'quota' : 'error', search };
+      return res.json(data);                             // not cached: try again later
+    }
+    const best = (d.items || []).map(it => ({ it, s: ytScore(it, artist, title) })).sort((a, b) => b.s - a.s)[0];
+    const data = best && best.s >= 4
+      ? { ok: true, videoId: best.it.id.videoId, title: best.it.snippet.title, channel: best.it.snippet.channelTitle, search }
+      : { ok: false, reason: 'notfound', search };
+    ytCache.set(key, { at: Date.now(), data });
+    if (ytCache.size > 3000) ytCache.delete(ytCache.keys().next().value);
+    res.json(data);
+  } catch (e) {
+    console.log('[YouTube] request failed:', e.message);
+    res.json({ ok: false, reason: 'error', search });
+  }
+});
+
 app.get('/api/music/lyrics', async (req, res) => {
   try {
     if (!MUSIXMATCH_API_KEY) return res.json({ ok: false, reason: 'nokey' });

@@ -1,3 +1,19 @@
+# Frame v20
+
+- **New artist page (design A)**: big banner photo with the artist's name, number of songs, fans and albums; **Play all**, **Shuffle** and **Previews** buttons; tabs for **All songs**, **Albums**, **Singles** and **Similar** artists.
+- **All songs**: Frame collects every song from the artist's albums, EPs and singles (duplicates removed). Popular songs come first, then the rest from newest to oldest. Each song has a ▶ button to play the full song from there.
+- **Back, one step at a time**: the phone's back button, the browser's back button and Frame's ← buttons go back one step: album → artist → song → search → Music → home. Back on the big full-song player shrinks it to the mini player and the song keeps playing.
+- **Wave bars (2b)**: four thin green bars in the bottom player and the mini full-song player move while music plays and stop when it's paused.
+
+# Frame v19
+
+- **Artist pages inside Frame**: tap an artist's name anywhere (song page, search, home, credits) and their page opens in Frame: photo, fans, top songs, albums and singles, and "Fans also like". Nothing opens Deezer any more.
+- **Album pages**: tap an album to see all its songs; "Play full songs" plays the whole album in order.
+- **"Play full songs"** on an artist page plays their top songs one after another in the full-song player.
+- **Keeps playing while you search**: the down arrow (or **Audio mode**) shrinks the full song to a small player in the corner. You can search, open artists and browse while it plays; tap the arrows to make it big again, or the X to stop.
+- **Faster full songs**: Frame connects to YouTube as soon as a song page opens, loads the player early, and remembers each song's video on your device, so songs you played before start almost instantly.
+- Playing a 30-second preview pauses the full song, and the other way round.
+
 # Frame v18
 
 - **Full songs inside Frame** (design K, "ambient cover color"): on a song page, tap **Full song**. The whole song plays inside Frame with YouTube's official player (privacy-enhanced mode). You never leave Frame.

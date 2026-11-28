@@ -505,6 +505,95 @@ function ytScore(item, artist, title) {
   if (/(cover|karaoke|remix|reaction|slowed|sped up|8d|instrumental|live at|tutorial|nightcore)/.test(raw) && !/(cover|remix|live|instrumental)/.test(rawT)) s -= 6;
   return s;
 }
+// ── Artist and album pages inside Frame (Deezer data) ──
+const artistCache = new Map(), albumCache = new Map();
+app.get('/api/music/artist', async (req, res) => {
+  try {
+    let id = String(req.query.id || '').replace(/\D/g, '');
+    if (!id && req.query.name) {
+      const s0 = await deezer('/search/artist?limit=1&q=' + encodeURIComponent(String(req.query.name).slice(0, 120)));
+      id = String(s0.data?.[0]?.id || '');
+    }
+    if (!id) return res.json({ ok: false, error: 'Artist not found.' });
+    const hit = artistCache.get(id);
+    if (hit && Date.now() - hit.at < 6 * 3600e3) return res.json(hit.data);
+    const [a, top, albums, related] = await Promise.all([
+      deezer('/artist/' + id),
+      deezer(`/artist/${id}/top?limit=20`).catch(() => ({ data: [] })),
+      deezer(`/artist/${id}/albums?limit=40`).catch(() => ({ data: [] })),
+      deezer(`/artist/${id}/related?limit=12`).catch(() => ({ data: [] }))
+    ]);
+    if (!a || a.error || !a.name) return res.json({ ok: false, error: 'Artist not found.' });
+    const data = {
+      ok: true,
+      artist: { id: a.id, name: a.name, picture: a.picture_medium || a.picture || '', pictureBig: a.picture_xl || a.picture_big || a.picture_medium || '', fans: a.nb_fan || 0, albums: a.nb_album || 0 },
+      top: (top.data || []).map(slimTrack).filter(Boolean),
+      albums: (albums.data || []).map(al => ({ id: al.id, title: al.title, cover: al.cover_medium || al.cover || '', year: String(al.release_date || '').slice(0, 4), type: al.record_type || 'album' }))
+        .sort((x, y) => (y.year || '').localeCompare(x.year || '')),
+      related: (related.data || []).map(r => ({ id: r.id, name: r.name, picture: r.picture_medium || r.picture || '' }))
+    };
+    artistCache.set(id, { at: Date.now(), data });
+    if (artistCache.size > 500) artistCache.delete(artistCache.keys().next().value);
+    res.json(data);
+  } catch (e) { res.json({ ok: false, error: 'Couldn’t load this artist.' }); }
+});
+// Every song of an artist: the tracks of all their albums, EPs and singles
+// (duplicates removed), newest release first. Cached 12 h.
+const artistSongsCache = new Map();
+const songKey = t => String(t || '').toLowerCase().replace(/\(.*?\)|\[.*?\]|feat\..*$|ft\..*$/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+app.get('/api/music/artist/songs', async (req, res) => {
+  try {
+    const id = String(req.query.id || '').replace(/\D/g, '');
+    if (!id) return res.json({ ok: false, error: 'Artist not found.' });
+    const hit = artistSongsCache.get(id);
+    if (hit && Date.now() - hit.at < 12 * 3600e3) return res.json(hit.data);
+    const albums = ((await deezer(`/artist/${id}/albums?limit=100`)).data || [])
+      .sort((a, b) => String(b.release_date || '').localeCompare(String(a.release_date || ''))).slice(0, 40);
+    const songs = [], seen = new Set();
+    for (let i = 0; i < albums.length; i += 8) {                     // 8 at a time (Deezer rate limit)
+      const batch = albums.slice(i, i + 8);
+      const lists = await Promise.all(batch.map(al => deezer(`/album/${al.id}/tracks?limit=100`).catch(() => ({ data: [] }))));
+      lists.forEach((l, k) => {
+        const al = batch[k];
+        for (const t of l.data || []) {
+          if (String(t.artist?.id || '') !== id && !(t.contributors || []).some(c => String(c.id) === id)) {
+            if (t.artist && String(t.artist.id) !== id) continue;   // compilations: keep only this artist's songs
+          }
+          const key = songKey(t.title_short || t.title);
+          if (!key || seen.has(key)) continue;
+          seen.add(key);
+          songs.push({ ...slimTrack({ ...t, album: { title: al.title, cover_medium: al.cover_medium || al.cover || '', cover_xl: al.cover_xl || al.cover_big || '' } }),
+            artistId: Number(id), duration: t.duration || 0, year: String(al.release_date || '').slice(0, 4), type: al.record_type || 'album' });
+        }
+      });
+    }
+    const data = { ok: true, count: songs.length, songs };
+    artistSongsCache.set(id, { at: Date.now(), data });
+    if (artistSongsCache.size > 300) artistSongsCache.delete(artistSongsCache.keys().next().value);
+    res.json(data);
+  } catch (e) { res.json({ ok: false, error: 'Couldn’t load the songs.' }); }
+});
+
+app.get('/api/music/album', async (req, res) => {
+  try {
+    const id = String(req.query.id || '').replace(/\D/g, '');
+    if (!id) return res.json({ ok: false, error: 'Album not found.' });
+    const hit = albumCache.get(id);
+    if (hit && Date.now() - hit.at < 6 * 3600e3) return res.json(hit.data);
+    const al = await deezer('/album/' + id);
+    if (!al || al.error) return res.json({ ok: false, error: 'Album not found.' });
+    const cover = al.cover_medium || al.cover || '', coverBig = al.cover_xl || al.cover_big || cover;
+    const data = {
+      ok: true,
+      album: { id: al.id, title: al.title, cover, coverBig, year: String(al.release_date || '').slice(0, 4), artist: al.artist?.name || '', artistId: al.artist?.id || null, tracks: al.nb_tracks || 0, duration: al.duration || 0, label: al.label || '' },
+      tracks: (al.tracks?.data || []).map(t => ({ ...slimTrack({ ...t, album: { title: al.title, cover_medium: cover, cover_xl: coverBig } }), duration: t.duration || 0 })).filter(Boolean)
+    };
+    albumCache.set(id, { at: Date.now(), data });
+    if (albumCache.size > 500) albumCache.delete(albumCache.keys().next().value);
+    res.json(data);
+  } catch (e) { res.json({ ok: false, error: 'Couldn’t load this album.' }); }
+});
+
 app.get('/api/music/fullsong', async (req, res) => {
   const title = String(req.query.title || '').slice(0, 150).trim(), artist = String(req.query.artist || '').slice(0, 120).trim();
   if (!title) return res.json({ ok: false, error: 'Missing song title.' });
@@ -518,7 +607,7 @@ app.get('/api/music/fullsong', async (req, res) => {
   if (hits.length >= 30) return res.json({ ok: false, reason: 'limit', search });
   hits.push(Date.now()); ytHits.set(ip, hits);
   try {
-    const u = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoEmbeddable=true&maxResults=8&safeSearch=moderate'
+    const u = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoEmbeddable=true&maxResults=6&safeSearch=moderate'
       + '&q=' + encodeURIComponent(`${artist} ${title}`.trim()) + '&key=' + encodeURIComponent(YT_KEY());
     const r = await fetch(u, { signal: AbortSignal.timeout(10000) });
     const d = await r.json();
